@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+<!--==============レイアウトを制御する独自のCSSを読み込み===============-->
+<link rel="stylesheet" type="text/css" href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css">
+<link rel="stylesheet"  type="text/css" href="/static/css/display.css">
+<link rel="stylesheet"   type="text/css" href="/static/css/back.css">
+<link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+<script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+</head>
+<div class="bg_pattern Paper_v2"></div>
+<div class="section">
+<style>
+  #example{
+      margin: auto;
+  }
+</style>
+
+
+<h2>分析結果　見たいものをクリックしてね!</h2>
+<div>
+
+  <ul class="accordion-area">
+    <li>
+      <section>
+        <h3 class="title">総合分析</h3>
+        <div class="box">
+          <p><img src="./static/images/plot.png"></p>
+        </div>
+      </section>
+    </li>
+
+    <li>
+      <section>
+        <h3 class="title">得点率</h3>
+        <div class="box">
+          <p><img src="./static/images/plot.png"></p>
+        </div>
+      </section>
+    </li>
+    <li>
+      <section>
+        <h3 class="title">得点表</h3>
+
+        <div class="box">
+
+          <div>
+            {% for table in df_score_list %}
+            <table>
+              {% for row in table %}
+              <tr>
+                {% for item in row%}
+                <td>{{ item }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </table>
+            {{ df }}
+            <br>
+            {% endfor %}
+
+          </div>
+
+
+
+        </div>
+      </section>
+
+    </li>
+    <li>
+        <section>
+          <h3 class="title">コース図</h3>
+          <div class="box">
+            <p><img src="./static/images/plot1.png"></p>
+            <p><img src="./static/images/plot2.png"></p>
+          </div>
+        </section>
+
+      </li>
+  </ul>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="/static/js/display.js"></script>
+
+</div>
+</body>
+<input class="button" type="button" onclick="location.href='{{ url_for('index')}}'" value="データベースへ">
+</div>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<link rel="stylesheet" href="display.css">
+<details>
+    <summary>総合分析</summary>
+    <p><img src="スクリーンショット_20230209_103045.png"></p>
+</details>
+
+<details>
+    <summary>得点率</summary>
+    <p><p><img src="スクリーンショット_20230209_103115.png"></p></p>
+</details>
+
+<details>
+    <summary>得点表</summary>
+    <p><img src="スクリーンショット_20230209_102842.png"></p>
+</details>
+
+<details>
+    <summary>コース図</summary>
+    <p><img src="スクリーンショット_20230209_103142.png"></p>
+</details>
+-->

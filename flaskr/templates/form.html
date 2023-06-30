@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>情報登録</title>
+    <link rel="stylesheet" href="/static/css/form.css">
+</head>
+
+
+
+<body> <header>
+    <h2>卓球分析</h2>
+    <nav class="gnav">
+        <ul class="menu">
+
+           <li> <label>年/月/日：<input type="date"></label></li>
+
+            <li><input type="search" autocomplete="on" list="list"></li>
+
+<!-- 候補を表示 -->
+
+</datalist>
+
+
+<input type="submit" value="検索">
+
+        </ul>
+    </nav>
+</header>
+
+
+<div>
+  <h1>ファイルアップロード、情報の入力</h1>
+  <h2>アップロードするファイルの選択と情報の入力をお願いします
+    <br>必ずファイルはCSVファイルをアップロードしてください
+  </h2>
+
+
+    </div>
+
+
+    <title>test</title>
+    <style>
+      div{
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+  <div>
+
+        <form method="post" action="{{url_for('register')}}" enctype="multipart/form-data">
+          <input type="file" name="contents" multiple>
+          <table border="1">
+              <tr>
+                  <th>日付</th>
+                  <th>試合</th>
+                  <th>利き手</th>
+              </tr>
+              <tr>
+                  <td><input type="date" name="date"></td>
+                  <td><input type="text" name="name"></td>
+                  <td><input type="text" name="right_left"></td>
+              </tr>
+          </table>
+
+
+
+      </div>
+      <div>
+        <input type="submit" value="送信する">
+        <label>
+          <input type="reset" value="リセットする"></label></label>
+        </form>
+
+
+      </div>
+  </div>
+  </body>
+  </html>
+
+
+
+</body>

@@ -1,0 +1,47 @@
+
+
+header .gnav .menu {
+    display: flex; /* 中の要素を横並びにする */
+}
+
+header .gnav .menu li {
+    list-style: none; /* リストの[・]を消す */
+}
+
+header .gnav .menu li + li {
+    margin-left: 40px; /* メニューそれぞれに間隔をあけるため */
+}
+
+main {
+    height: 100vw; /* スクロールの演出を見れるようにmainに高さを指定 */
+}
+
+
+body{margin-top: 5%;
+    margin-left: 20%;}
+
+.button{
+    font-size:1.0rem;
+    position: relative;
+    display: block;
+    padding: 1em 2em 1em 1em;
+    width: 175px;
+    color: #000000;
+        line-height: 1;
+    text-align: center;
+    background: #7FFFD4;
+    border-radius: 1.5em;
+}
+
+  .wrap{
+    margin-bottom: 20px;
+    height:100px;
+  }
+  .box{
+    display:inline-block;
+    text-align:center;
+    width:200px;
+    height:500px;
+    position: relative;
+    margin-top: 10
+  }
