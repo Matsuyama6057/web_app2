@@ -27,7 +27,7 @@
       <section>
         <h3 class="title">総合分析</h3>
         <div class="box">
-          <p><img src="./static/images/plot.png"></p>
+          <p>aaaaaa</p>
         </div>
       </section>
     </li>
@@ -36,7 +36,7 @@
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
-          <p><img src="./static/images/plot.png"></p>
+          <p>aaaaaaa</p>
         </div>
       </section>
     </li>
@@ -45,25 +45,66 @@
         <h3 class="title">得点表</h3>
 
         <div class="box">
-
           <div>
+            <style>
+              table {
+                  border-collapse: collapse;
+                  width: 100%;
+              }
+              th, td {
+                  border: 1px solid black;
+                  padding: 8px;
+                  text-align: center;
+              }
+              th {
+                  background-color: lightgray;
+              }
+          </style>
+            {% set ns = namespace(num=0) %}
             {% for table in df_score_list %}
-            <table>
+            <table border="3">
+
               {% for row in table %}
-              <tr>
+
+              <tr><th>
+                {%if ns.num%2==0%}
+                    {%print(first)%}
+                    {%if tmp<0%}
+                        {%for i in range(-tmp)%}
+                        &nbsp;
+                        {%endfor%}
+                    {%endif%}
+                {%endif%}
+                {%if ns.num%2!=0%}
+
+                    {%print(second)%}
+                    {%if tmp>0%}
+                        {%for i in range(tmp)%}
+                        &nbsp;
+                        {%endfor%}
+                    {%endif%}
+
+                {%endif%}
+                {% set ns.num = ns.num + 1 %}
+
+
+
+
                 {% for item in row%}
-                <td>{{ item }}</td>
+
+
+                {{ item }}
+
                 {% endfor %}
+              </th>
               </tr>
+              <br>
+
               {% endfor %}
             </table>
-            {{ df }}
             <br>
             {% endfor %}
-
           </div>
-
-
 
         </div>
       </section>
@@ -73,8 +114,21 @@
         <section>
           <h3 class="title">コース図</h3>
           <div class="box">
-            <p><img src="./static/images/plot1.png"></p>
-            <p><img src="./static/images/plot2.png"></p>
+            <p>1ゲーム目</p>
+            <p><img src="./static/images/plot0_f.png"></p>
+            <p><img src="./static/images/plot0_s.png"></p>
+            <p>2ゲーム目</p>
+            <p><img src="./static/images/plot1_f.png"></p>
+            <p><img src="./static/images/plot1_s.png"></p>
+            <p>3ゲーム目</p>
+            <p><img src="./static/images/plot2_f.png"></p>
+            <p><img src="./static/images/plot2_s.png"></p>
+            <p>4ゲーム目</p>
+            <p><img src="./static/images/plot3_f.png"></p>
+            <p><img src="./static/images/plot3_s.png"></p>
+            <p>5ゲーム目</p>
+            <p><img src="./static/images/plot4_f.png"></p>
+            <p><img src="./static/images/plot4_s.png"></p>
           </div>
         </section>
 
