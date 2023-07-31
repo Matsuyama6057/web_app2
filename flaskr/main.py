@@ -1,33 +1,27 @@
-#from flaskr import app
-from flask import Flask
-from waitress import serve
-from flask import render_template, request, redirect, url_for
-import sqlite3
-import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from matplotlib import patches
-from werkzeug.utils import secure_filename
-from flask import send_from_directory
+# 必要なモジュールのインポート
 import os
+import sqlite3
+
 import numpy as np
-import random
-from PIL import Image, ImageDraw,ImageFont
+import pandas as pd
+import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
+from flask import Flask, render_template, request, redirect, url_for
+
 
 app=Flask(__name__)
 
 DATABASE ='database.db'
-
-#--------------テーブル全削除のときのみ使用-------------
-'''con = sqlite3.connect(DATABASE)
-cur = con.cursor()
-cur.execute("DROP table games")'''
-#----------------------------------------------------
-
 con = sqlite3.connect(DATABASE)
 cur = con.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS games (id int PRIMARY KEY, date date, name text, right_left text, contents mediumblob)")
+
+#----------テーブル全削除のときのみ使用----------
+'''con = sqlite3.connect(DATABASE)
+cur = con.cursor()
+cur.execute("DROP table games")'''
+#----------------------------------------------
+
 
 @app.route('/')
 def index():
@@ -45,6 +39,7 @@ def index():
         'index.html',
         games=games
     )
+
 
 @app.route('/sear', methods = ['post'])
 def sear():
@@ -76,6 +71,7 @@ def sear():
         games=games
     )
 
+
 @app.route('/send',methods = ['post','get'])
 def send():
     num = request.form['id']
@@ -85,8 +81,8 @@ def send():
                 [num])
     file_name= cur.fetchall()[0][4]
 
-#-------------データ分析の記述--------------------
-#-------------仮の分析---------------------------
+#----------データ分析の記述---------------------
+#----------仮の分析-----------------------------
     df = pd.read_csv(file_name)
     B=0
     F=0
@@ -104,8 +100,10 @@ def send():
     os.makedirs(dirname, exist_ok=True)
     filename=dirname + "plot.png"
     fig.savefig(filename)
-# ----------------仮の分析終わり-----------------------------------------------------
-#--------コース図--------------------------------------------------------------------
+#----------------------------------------------
+
+
+#----------コース図-----------------------------
     first=df['名前'][0]
     for row in df['名前']:
         if first!=row:
@@ -157,7 +155,6 @@ def send():
     for i in range(len(first_result)):
         F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s=map(int,[0]*16)
         for j in range(len(first_result[i])):
-
             row=df['01_SV_03'][j+len(first_result[i])*i]
             print(row)
             if df['名前'][j+len(first_result[i])*i]==first:
@@ -196,11 +193,15 @@ def send():
                     BS_s+=1
 
         print(F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s)
-        # 画像のサイズ
-        font_path = "arial.ttf"  # フォントファイルのパス
-        font_size = 40  # フォントサイズ
+
+
+        # (1)味方のコース図
+        # フォントの設定
+        font_path = "arial.ttf"
+        font_size = 40
         font = ImageFont.truetype(font_path, font_size)
 
+        # 画像のサイズ設定
         width = 600
         height = 400
 
@@ -217,83 +218,74 @@ def send():
         draw.line((170, 50, 170, 350), fill="green", width=3)
         draw.line((420, 50, 420, 350), fill="green", width=3)
 
+        # 味方の選手名
+        text = first
+        x = 0
+        y = 5
+        draw.text((x, y), text, font=font, fill="black")
+
+        # 区分ごとの着弾回数
         print("firstのコース")
         text = str(F_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 110
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FM_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 230
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BM_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 360
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(B_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 480
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FS_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 110
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FMS_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 230
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BMS_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 360
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BS_f)
         print(text)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 480
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
-        # フォントの設定
-        font_path = "arial.ttf"  # フォントファイルのパス
-        font_size = 40  # フォントサイズ
-        font = ImageFont.truetype(font_path, font_size)
-
-        # 文字列の描画
-        text =first
-        #text_width, text_height = draw.textsize(text, font=font)
-        x = 0
-        y = 5
-        draw.text((x, y), text, font=font, fill="black")
-
+        # 画像として保存
         filename=dirname + "plot" + str(i) + "_f.png"
         image.save(filename)
 
-        #相手
-        # 画像のサイズ
-        font_path = "arial.ttf"  # フォントファイルのパス
-        font_size = 40  # フォントサイズ
+
+        # (2)相手のコース図
+        # フォントの設定
+        font_path = "arial.ttf"
+        font_size = 40
         font = ImageFont.truetype(font_path, font_size)
+
+        # 画像のサイズ設定
         width = 600
         height = 400
 
@@ -310,68 +302,58 @@ def send():
         draw.line((170, 50, 170, 350), fill="green", width=3)
         draw.line((420, 50, 420, 350), fill="green", width=3)
 
+        # 相手の選手名
+        text = second
+        x = 0
+        y = 5
+        draw.text((x, y), text, font=font, fill="black")
+
+        # 区分ごとの着弾回数
         text = str(F_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 110
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FM_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 230
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BM_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 360
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(B_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 480
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FS_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 110
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FMS_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 230
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BMS_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 360
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BS_s)
-        #text_width, text_height = draw.textsize(text, font=font)
         x = 480
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
-        # フォントの設定
-        font_path = "arial.ttf"  # フォントファイルのパス
-        font_size = 40  # フォントサイズ
-        font = ImageFont.truetype(font_path, font_size)
-
-        # 文字列の描画
-        text = second
-        #text_width, text_height = draw.textsize(text, font=font)
-        x = 0
-        y = 5
-        draw.text((x, y), text, font=font, fill="black")
-
+        # 画像として保存
         filename=dirname + "plot" + str(i) + "_s.png"
         image.save(filename)
+
+
     for i in range(len(first_result)):
         for j in range(len(first_result[i])):
             if first_result[i][j]!=-1:
@@ -404,9 +386,8 @@ def send():
     print(tmp)
 
     return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp)
-    #return render_template('display.html')
+#----------------------------------------------
 
-#------コース図終わり---------------------------------------------------------
 
 def send2():
     print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
@@ -417,8 +398,7 @@ def send2():
                 [num])
     file_name= cur.fetchall()[0][4]
 
-#-------------データ分析の記述--------------------
-#-------------仮の分析---------------------------
+#----------得点率------------------------------
     df = pd.read_csv(file_name)
     B=0
     F=0
@@ -443,7 +423,10 @@ def send2():
             second=row
             break
     i=0
-    #----------------得点表------------------------------------------------------
+#----------------------------------------------
+
+
+#----------得点表-------------------------------
     i=0
     score1=[]
     score2=[]
@@ -470,7 +453,6 @@ def send2():
             second_score=[]
             print("game_point")
 
-
         print(i,df['00_03_Point'][i],score1[i],score2[i])
         if df['00_03_Point'][i]==first:
             first_score.append(score1[i])
@@ -478,10 +460,13 @@ def send2():
         if df['00_03_Point'][i]==second:
             second_score.append(score2[i])
             first_score.append(-1)
+
     first_result.append(first_score)
     second_result.append(second_score)
     print(first_result)
     print(second_result)
+#----------------------------------------------
+#----------ここまでデータ分析の記述--------------
 
 
 @app.route('/form')
@@ -490,11 +475,13 @@ def form():
         'form.html'
     )
 
+
 @app.route('/display')
 def display():
     return render_template(
         'display.html'
     )
+
 
 @app.route('/register',methods = ['post','get'])
 def register():
@@ -525,6 +512,7 @@ def register():
     return redirect(url_for('index'))
 
 
+
 @app.route('/delete')
 def delete():
     return render_template(
@@ -545,6 +533,4 @@ def post_delete():
 
 
 if __name__ == '__main__':
-
-    app.run(host='0.0.0.0', port=7777)
-    # FlaskアプリをWaitressで稼働させる
+    app.run()
