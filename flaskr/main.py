@@ -384,8 +384,46 @@ def send():
     print(*df_score_list)
     tmp=len(first)-len(second)
     print(tmp)
+#----------------------------------------------
 
-    return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp)
+
+#----------得点率------------------------------
+    number_of_df_score_rate = 4
+
+    # 味方と相手の選手名を抽出
+    first_player_name = df['名前'][0]
+    for row in df['名前']:
+        if first_player_name != row:
+            second_player_name = row
+            break
+    
+    # 得点率の表を作成
+    table_score_rate = [
+        [first_player_name,"","","",""],
+        ["SV player","得点率","サーブ数","得点","失点"]
+    ]
+
+    # 得点率・サーブ数・得点・失点を計算
+    count_serve = 0
+    count_my_point = 0
+    count_rival_point = 0
+    for i in range(len(df)):
+        if df.iat[i,7] == first_player_name:  # サーブ数
+            count_serve = count_serve + 1
+        if (df.iat[i,7] == first_player_name) and (df.iat[i,5] == first_player_name):  # 得点
+            count_my_point = count_my_point + 1
+        if (df.iat[i,7] == first_player_name) and (df.iat[i,5] != first_player_name):  # 失点
+            count_rival_point = count_rival_point + 1
+        score_rate = count_my_point / (count_my_point + count_rival_point) # 得点率
+        score_rate = "{:.1%}".format(score_rate)
+    table_score_rate.append(["Total",score_rate,count_serve,count_my_point,count_rival_point])
+
+    # 得点率の表からデータフレームを作成
+    df_score_rate = pd.DataFrame(table_score_rate)
+#----------------------------------------------
+
+
+    return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, df_score_rate=df_score_rate.to_html(index=False,header=False))
 #----------------------------------------------
 
 
@@ -465,12 +503,6 @@ def send2():
     second_result.append(second_score)
     print(first_result)
     print(second_result)
-#----------------------------------------------
-
-
-#----------得点率------------------------------
-
-    
 #----------------------------------------------
 #----------ここまでデータ分析の記述--------------
 
