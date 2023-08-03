@@ -399,6 +399,15 @@ def send():
             second_player_name = row
             break
 
+    # ゲームカウントのパターンを抽出
+    game_count_pattern_list = [
+        ["0:00"],
+        ["0:01","1:00"],
+        ["0:02","1:01","2:00"],
+        ["1:02","2:01"],
+        ["2,02"]
+    ]
+
 
     # パターン1：味方サーブ
     # 得点率の表を作成
@@ -407,7 +416,29 @@ def send():
         ["Service","得点率","サーブ数","得点","失点"]
     ]
 
-    # 得点率・サーブ数・得点・失点を計算
+    # ゲーム毎の得点率・サーブ数・得点・失点を計算
+    game_index = 1  # ゲーム毎のラベル用
+    for game_count_pattern in game_count_pattern_list:
+        count_serve = 0
+        count_my_point = 0
+        count_rival_point = 0
+        for i in range(len(df)):
+            for game_count in game_count_pattern:
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,3] == game_count):  # サーブ数
+                    count_serve = count_serve + 1
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,5] == first_player_name) and (df.iat[i,3] == game_count):  # 得点
+                    count_my_point = count_my_point + 1
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,5] != first_player_name) and (df.iat[i,3] == game_count):  # 失点
+                    count_rival_point = count_rival_point + 1
+        
+        # 全数値が0でない時のみ、計算結果を表に追加
+        if (count_serve != 0) and (count_my_point != 0) and (count_rival_point != 0):
+            score_rate = count_my_point / (count_my_point + count_rival_point) # 得点率
+            score_rate = "{:.1%}".format(score_rate)
+            table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
+        game_index = game_index + 1
+
+    # トータルの得点率・サーブ数・得点・失点を計算
     count_serve = 0
     count_my_point = 0
     count_rival_point = 0
@@ -434,6 +465,28 @@ def send():
         [first_player_name,"","","",""],
         ["Receive","得点率","レシーブ数","得点","失点"]
     ]
+
+    # ゲーム毎の得点率・サーブ数・得点・失点を計算
+    game_index = 1  # ゲーム毎のラベル用
+    for game_count_pattern in game_count_pattern_list:
+        count_serve = 0
+        count_my_point = 0
+        count_rival_point = 0
+        for i in range(len(df)):
+            for game_count in game_count_pattern:
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,3] == game_count):  # サーブ数
+                    count_serve = count_serve + 1
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,5] != second_player_name) and (df.iat[i,3] == game_count):  # 得点
+                    count_my_point = count_my_point + 1
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,5] == second_player_name) and (df.iat[i,3] == game_count):  # 失点
+                    count_rival_point = count_rival_point + 1
+        
+        # 全数値が0でない時のみ、計算結果を表に追加
+        if (count_serve != 0) and (count_my_point != 0) and (count_rival_point != 0):
+            score_rate = count_my_point / (count_my_point + count_rival_point) # 得点率
+            score_rate = "{:.1%}".format(score_rate)
+            table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
+        game_index = game_index + 1
 
     # 得点率・レシーブ数・得点・失点を計算
     count_serve = 0
@@ -463,6 +516,28 @@ def send():
         ["Service","得点率","サーブ数","得点","失点"]
     ]
 
+    # ゲーム毎の得点率・サーブ数・得点・失点を計算
+    game_index = 1  # ゲーム毎のラベル用
+    for game_count_pattern in game_count_pattern_list:
+        count_serve = 0
+        count_my_point = 0
+        count_rival_point = 0
+        for i in range(len(df)):
+            for game_count in game_count_pattern:
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,3] == game_count):  # サーブ数
+                    count_serve = count_serve + 1
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,5] == second_player_name) and (df.iat[i,3] == game_count):  # 得点
+                    count_my_point = count_my_point + 1
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,5] != second_player_name) and (df.iat[i,3] == game_count):  # 失点
+                    count_rival_point = count_rival_point + 1
+        
+        # 全数値が0でない時のみ、計算結果を表に追加
+        if (count_serve != 0) and (count_my_point != 0) and (count_rival_point != 0):
+            score_rate = count_my_point / (count_my_point + count_rival_point) # 得点率
+            score_rate = "{:.1%}".format(score_rate)
+            table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
+        game_index = game_index + 1
+
     # 得点率・サーブ数・得点・失点を計算
     count_serve = 0
     count_my_point = 0
@@ -490,6 +565,28 @@ def send():
         [second_player_name,"","","",""],
         ["Receive","得点率","レシーブ数","得点","失点"]
     ]
+
+    # ゲーム毎の得点率・サーブ数・得点・失点を計算
+    game_index = 1  # ゲーム毎のラベル用
+    for game_count_pattern in game_count_pattern_list:
+        count_serve = 0
+        count_my_point = 0
+        count_rival_point = 0
+        for i in range(len(df)):
+            for game_count in game_count_pattern:
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,3] == game_count):  # サーブ数
+                    count_serve = count_serve + 1
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,5] != first_player_name) and (df.iat[i,3] == game_count):  # 得点
+                    count_my_point = count_my_point + 1
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,5] == first_player_name) and (df.iat[i,3] == game_count):  # 失点
+                    count_rival_point = count_rival_point + 1
+        
+        # 全数値が0でない時のみ、計算結果を表に追加
+        if (count_serve != 0) and (count_my_point != 0) and (count_rival_point != 0):
+            score_rate = count_my_point / (count_my_point + count_rival_point) # 得点率
+            score_rate = "{:.1%}".format(score_rate)
+            table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
+        game_index = game_index + 1
 
     # 得点率・レシーブ数・得点・失点を計算
     count_serve = 0
