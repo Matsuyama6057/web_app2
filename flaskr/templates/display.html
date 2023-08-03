@@ -36,19 +36,23 @@
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
-          <div>
+          <div class="score-rate-area-wrapper-01">
             <p>味方の得点率</p>
-            {{ summary_df_score_rate[0] | safe }}
-            <br>
-            {{ summary_df_score_rate[1] | safe }}
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[0] | safe }}
+            </div>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[1] | safe }}
+            </div>
           </div>
-          <br><br>
-          <div>
+          <div class="score-rate-area-wrapper-02">
             <p>相手の得点率</p>
-            {{ summary_df_score_rate[2] | safe }}
-            <br>
-            {{ summary_df_score_rate[3] | safe }}
-          </div>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[2] | safe }}
+            </div>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[3] | safe }}
+            </div>
         </div>
       </section>
     </li>
