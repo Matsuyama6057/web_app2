@@ -36,8 +36,19 @@
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
-          <p>ゲーム1</p>
-          {{ df_score_rate | safe }}
+          <div>
+            <p>味方の得点率</p>
+            {{ summary_df_score_rate[0] | safe }}
+            <br>
+            {{ summary_df_score_rate[1] | safe }}
+          </div>
+          <br><br>
+          <div>
+            <p>相手の得点率</p>
+            {{ summary_df_score_rate[2] | safe }}
+            <br>
+            {{ summary_df_score_rate[3] | safe }}
+          </div>
         </div>
       </section>
     </li>
