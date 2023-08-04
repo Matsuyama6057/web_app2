@@ -48,8 +48,6 @@ def sear():
     con = sqlite3.connect(DATABASE)
     cur = con.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS games (id int PRIMARY KEY, day text, name text, right_left text, contents mediumblob)")
-    print(date,len(date))
-    print(search,len(search))
     if len(date) == 0 and len(search) == 0:
         search_games = cur.execute('SELECT * FROM games ORDER BY id DESC').fetchall()
     elif len(date) != 0 and len(search) == 0:
@@ -82,24 +80,10 @@ def send():
     file_name= cur.fetchall()[0][4]
 
 #----------データ分析の記述---------------------
-#----------仮の分析-----------------------------
+#----------データの読み込みおよびファイルパス設定-----------------------------
     df = pd.read_csv(file_name)
-    B=0
-    F=0
-    for row in df['02_RV_01']:
-        if row=="B":
-            B+=1
-        elif row=="F":
-            F+=1
-    fig = plt.figure()
-    labels = ['B', 'F']
-    values = [B, F]
-    lefts = np.arange(len(values))
-    plt.bar(lefts, values, tick_label=labels, width=0.5, color="#b2b2b2")
     dirname = "static/images/"
     os.makedirs(dirname, exist_ok=True)
-    filename=dirname + "plot.png"
-    fig.savefig(filename)
 #----------------------------------------------
 
 
@@ -133,10 +117,7 @@ def send():
             second_result.append(second_score)
             first_score=[]
             second_score=[]
-            print("game_point")
 
-
-        print(i,df['00_03_Point'][i],score1[i],score2[i])
         if df['00_03_Point'][i]==first:
             first_score.append(score1[i])
             second_score.append(-1)
@@ -150,12 +131,11 @@ def send():
         if first!=row:
             second=row
             break
-    print(len(first_result[0]))
     for i in range(len(first_result)):
         F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s=map(int,[0]*16)
         for j in range(len(first_result[i])):
             row=df['01_SV_03'][j+len(first_result[i])*i]
-            print(row)
+
             if df['名前'][j+len(first_result[i])*i]==first:
                 if row=="F":
                     F_f+=1
@@ -191,7 +171,6 @@ def send():
                 elif row=="BS":
                     BS_s+=1
 
-        print(F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s)
 
 
         # (1)味方のコース図
@@ -224,51 +203,42 @@ def send():
         draw.text((x, y), text, font=font, fill="black")
 
         # 区分ごとの着弾回数
-        print("firstのコース")
         text = str(F_f)
-        print(text)
         x = 110
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FM_f)
-        print(text)
         x = 230
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BM_f)
-        print(text)
         x = 360
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(B_f)
-        print(text)
         x = 480
         y = 125
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FS_f)
-        print(text)
         x = 110
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(FMS_f)
-        print(text)
         x = 230
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BMS_f)
-        print(text)
         x = 360
         y = 275
         draw.text((x, y), text, font=font, fill="black")
 
         text = str(BS_f)
-        print(text)
         x = 480
         y = 275
         draw.text((x, y), text, font=font, fill="black")
@@ -372,17 +342,13 @@ def send():
     data_score=[]
     for i in range(len(first_score_data)):
         data_score.append({first:first_score_data[i],second:second_score_data[i]})
-    print(len(data_score))
     df_score_list=[]
-    names = [first, second]
     i=0
     for data in data_score:
         data=pd.DataFrame(data)
         df_score_list.append(data.transpose())
         i+=1
-    print(*df_score_list)
     tmp=len(first)-len(second)
-    print(tmp)
 #----------------------------------------------
 
 
@@ -613,83 +579,7 @@ def send():
 #----------------------------------------------
 
 
-def send2():
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    num = request.form['id']
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
-    cur.execute("SELECT * from games where id = (?)",
-                [num])
-    file_name= cur.fetchall()[0][4]
 
-#----------仮の分析----------------------------
-    df = pd.read_csv(file_name)
-    B=0
-    F=0
-    for row in df['02_RV_01']:
-        if row=="B":
-            B+=1
-        elif row=="F":
-            F+=1
-    fig = plt.figure()
-    labels = ['B', 'F']
-    values = [B, F]
-    lefts = np.arange(len(values))
-    plt.bar(lefts, values, tick_label=labels, width=0.5, color="#b2b2b2")
-    dirname = "static/images/"
-    os.makedirs(dirname, exist_ok=True)
-    filename=dirname + "plot.png"
-    fig.savefig(filename)
-    F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s=map(int,[0]*16)
-    first=df['名前'][0]
-    for row in df['名前']:
-        if first!=row:
-            second=row
-            break
-    i=0
-#----------------------------------------------
-
-
-#----------得点表-------------------------------
-    i=0
-    score1=[]
-    score2=[]
-
-    for i in range(len(df)):
-        row=str(df['00_01_GameCount'][i])
-        if row[0]=="n":
-            break
-        score1.append(int(row[0]))
-        tmp=row[2:len(str(row))]
-        score2.append(int(tmp))
-        i+=1
-    sum=i
-
-    first_score=[]
-    second_score=[]
-    first_result=[]
-    second_result=[]
-    for i in range(sum):
-        if i!=0 and (score1[i]>score1[i-1] or score2[i]>score2[i-1]):
-            first_result.append(first_score)
-            second_result.append(second_score)
-            first_score=[]
-            second_score=[]
-            print("game_point")
-
-        print(i,df['00_03_Point'][i],score1[i],score2[i])
-        if df['00_03_Point'][i]==first:
-            first_score.append(score1[i])
-            second_score.append(-1)
-        if df['00_03_Point'][i]==second:
-            second_score.append(score2[i])
-            first_score.append(-1)
-
-    first_result.append(first_score)
-    second_result.append(second_score)
-    print(first_result)
-    print(second_result)
-#----------------------------------------------
 #----------ここまでデータ分析の記述--------------
 
 
