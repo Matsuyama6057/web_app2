@@ -133,18 +133,16 @@ td{
 border-right: 1px solid black;
 background-color: lightgray;
 }
+
 .score-rate-area-wrapper-01 {
   padding-bottom: 1%;
   margin-bottom: 10%;
-  background: lightgray;
+  background-color: lightgray;
 }
-
 .score-rate-area-wrapper-02 {
   padding-bottom: 1%;
-  background: lightgray;
+  background-color: lightgray;
 }
-
 .score-rate-area {
   margin: 3% 5% 5%;
-  background: #ffffff;
 }

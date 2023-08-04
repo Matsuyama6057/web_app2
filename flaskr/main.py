@@ -374,7 +374,7 @@ def send():
     ]
 
 
-    # パターン1：味方サーブ
+    # (1)味方サーブ
     # 得点率の表を作成
     table_score_rate = [
         [first_player_name,"","","",""],
@@ -424,14 +424,14 @@ def send():
     summary_df_score_rate.append(df_score_rate)
 
 
-    # パターン2：味方レシーブ
+    # (2)味方レシーブ
     # 得点率の表を作成
     table_score_rate = [
         [first_player_name,"","","",""],
         ["Receive","得点率","レシーブ数","得点","失点"]
     ]
 
-    # ゲーム毎の得点率・サーブ数・得点・失点を計算
+    # ゲーム毎の得点率・レシーブ数・得点・失点を計算
     game_index = 1  # ゲーム毎のラベル用
     for game_count_pattern in game_count_pattern_list:
         count_serve = 0
@@ -439,7 +439,7 @@ def send():
         count_rival_point = 0
         for i in range(len(df)):
             for game_count in game_count_pattern:
-                if (df.iat[i,7] == second_player_name) and (df.iat[i,3] == game_count):  # サーブ数
+                if (df.iat[i,7] == second_player_name) and (df.iat[i,3] == game_count):  # レシーブ数
                     count_serve = count_serve + 1
                 if (df.iat[i,7] == second_player_name) and (df.iat[i,5] != second_player_name) and (df.iat[i,3] == game_count):  # 得点
                     count_my_point = count_my_point + 1
@@ -453,7 +453,7 @@ def send():
             table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
         game_index = game_index + 1
 
-    # 得点率・レシーブ数・得点・失点を計算
+    # トータルの得点率・レシーブ数・得点・失点を計算
     count_serve = 0
     count_my_point = 0
     count_rival_point = 0
@@ -474,7 +474,7 @@ def send():
     summary_df_score_rate.append(df_score_rate)
 
 
-    # パターン3：相手サーブ
+    # (3)相手サーブ
     # 得点率の表を作成
     table_score_rate = [
         [second_player_name,"","","",""],
@@ -503,7 +503,7 @@ def send():
             table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
         game_index = game_index + 1
 
-    # 得点率・サーブ数・得点・失点を計算
+    # トータルの得点率・サーブ数・得点・失点を計算
     count_serve = 0
     count_my_point = 0
     count_rival_point = 0
@@ -524,14 +524,14 @@ def send():
     summary_df_score_rate.append(df_score_rate)
 
 
-    # パターン4：相手レシーブ
+    # (4)相手レシーブ
     # 得点率の表を作成
     table_score_rate = [
         [second_player_name,"","","",""],
         ["Receive","得点率","レシーブ数","得点","失点"]
     ]
 
-    # ゲーム毎の得点率・サーブ数・得点・失点を計算
+    # ゲーム毎の得点率・レシーブ数・得点・失点を計算
     game_index = 1  # ゲーム毎のラベル用
     for game_count_pattern in game_count_pattern_list:
         count_serve = 0
@@ -539,7 +539,7 @@ def send():
         count_rival_point = 0
         for i in range(len(df)):
             for game_count in game_count_pattern:
-                if (df.iat[i,7] == first_player_name) and (df.iat[i,3] == game_count):  # サーブ数
+                if (df.iat[i,7] == first_player_name) and (df.iat[i,3] == game_count):  # レシーブ数
                     count_serve = count_serve + 1
                 if (df.iat[i,7] == first_player_name) and (df.iat[i,5] != first_player_name) and (df.iat[i,3] == game_count):  # 得点
                     count_my_point = count_my_point + 1
@@ -553,7 +553,7 @@ def send():
             table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
         game_index = game_index + 1
 
-    # 得点率・レシーブ数・得点・失点を計算
+    # トータルの得点率・レシーブ数・得点・失点を計算
     count_serve = 0
     count_my_point = 0
     count_rival_point = 0
@@ -577,9 +577,6 @@ def send():
 
     return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_df_score_rate=summary_df_score_rate,id=id)
 #----------------------------------------------
-
-
-
 #----------ここまでデータ分析の記述--------------
 
 
