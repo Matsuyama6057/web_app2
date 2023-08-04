@@ -17,11 +17,8 @@
       margin: auto;
   }
 </style>
-
-
-<h2>分析結果 見たいものをクリックしてね!</h2>
+<h2>分析結果　見たいものをクリックしてね!</h2>
 <div>
-
   <ul class="accordion-area">
     <li>
       <section>
@@ -31,97 +28,43 @@
         </div>
       </section>
     </li>
-
     <li>
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
-          <div class="score-rate-area-wrapper-01">
-            <p>味方の得点率</p>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[0] | safe }}
-            </div>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[1] | safe }}
-            </div>
-          </div>
-          <div class="score-rate-area-wrapper-02">
-            <p>相手の得点率</p>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[2] | safe }}
-            </div>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[3] | safe }}
-            </div>
+          <p>aaaaaaa</p>
         </div>
       </section>
     </li>
     <li>
       <section>
         <h3 class="title">得点表</h3>
-
         <div class="box">
           <div>
-            <style>
-              table {
-                  border-collapse: collapse;
-                  width: 100%;
-              }
-              th, td {
-                  border: 1px solid black;
-                  padding: 8px;
-                  text-align: center;
-              }
-              th {
-                  background-color: lightgray;
-              }
-          </style>
             {% set ns = namespace(num=0) %}
             {% for table in df_score_list %}
-            <table border="3">
-
-              {% for row in table %}
-
-              <tr><th>
-                {%if ns.num%2==0%}
-                    {%print(first)%}
-                    {%if tmp<0%}
-                        {%for i in range(-tmp)%}
-                        &nbsp;
-                        {%endfor%}
-                    {%endif%}
-                {%endif%}
-                {%if ns.num%2!=0%}
-
-                    {%print(second)%}
-                    {%if tmp>0%}
-                        {%for i in range(tmp)%}
-                        &nbsp;
-                        {%endfor%}
-                    {%endif%}
-
-                {%endif%}
-                {% set ns.num = ns.num + 1 %}
-
-
-
-
-                {% for item in row%}
-
-
-                {{ item }}
-
+              <table border="3">
+                {% for row in table %}
+                  <tr>
+                    <th>
+                      {%if ns.num%2==0%}
+                        {%print(first)%}
+                      {%endif%}
+                      {%if ns.num%2!=0%}
+                        {%print(second)%}
+                      {%endif%}
+                      {% set ns.num = ns.num + 1 %}
+                      {% for item in row%}
+                        <td>{{ item }}</td>
+                      {% endfor %}
+                    </th>
+                  </tr>
+                  <br>
                 {% endfor %}
-              </th>
-              </tr>
+              </table>
               <br>
-
-              {% endfor %}
-            </table>
-            <br>
             {% endfor %}
           </div>
-
         </div>
       </section>
 
@@ -131,20 +74,20 @@
           <h3 class="title">コース図</h3>
           <div class="box">
             <p>1ゲーム目</p>
-            <p><img src="./static/images/plot0_f.png"></p>
-            <p><img src="./static/images/plot0_s.png"></p>
+            <p><img src="./static/images/plot0_f_{{ id }}.png"></p>
+            <p><img src="./static/images/plot0_s_{{ id }}.png"></p>
             <p>2ゲーム目</p>
-            <p><img src="./static/images/plot1_f.png"></p>
-            <p><img src="./static/images/plot1_s.png"></p>
+            <p><img src="./static/images/plot1_f_{{ id }}.png"></p>
+            <p><img src="./static/images/plot1_s_{{ id }}.png"></p>
             <p>3ゲーム目</p>
-            <p><img src="./static/images/plot2_f.png"></p>
-            <p><img src="./static/images/plot2_s.png"></p>
+            <p><img src="./static/images/plot2_f_{{ id }}.png"></p>
+            <p><img src="./static/images/plot2_s_{{ id }}.png"></p>
             <p>4ゲーム目</p>
-            <p><img src="./static/images/plot3_f.png"></p>
-            <p><img src="./static/images/plot3_s.png"></p>
+            <p><img src="./static/images/plot3_f_{{ id }}.png"></p>
+            <p><img src="./static/images/plot3_s_{{ id }}.png"></p>
             <p>5ゲーム目</p>
-            <p><img src="./static/images/plot4_f.png"></p>
-            <p><img src="./static/images/plot4_s.png"></p>
+            <p><img src="./static/images/plot4_f_{{ id }}.png"></p>
+            <p><img src="./static/images/plot4_s_{{ id }}.png"></p>
           </div>
         </section>
 
@@ -159,42 +102,3 @@
 <input class="button" type="button" onclick="location.href='{{ url_for('index')}}'" value="データベースへ">
 </div>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--<link rel="stylesheet" href="display.css">
-<details>
-    <summary>総合分析</summary>
-    <p><img src="スクリーンショット_20230209_103045.png"></p>
-</details>
-
-<details>
-    <summary>得点率</summary>
-    <p><p><img src="スクリーンショット_20230209_103115.png"></p></p>
-</details>
-
-<details>
-    <summary>得点表</summary>
-    <p><img src="スクリーンショット_20230209_102842.png"></p>
-</details>
-
-<details>
-    <summary>コース図</summary>
-    <p><img src="スクリーンショット_20230209_103142.png"></p>
-</details>
--->
