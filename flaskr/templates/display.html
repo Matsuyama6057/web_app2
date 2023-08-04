@@ -17,28 +17,37 @@
       margin: auto;
   }
 </style>
-<h2>分析結果　見たいものをクリックしてね!</h2>
+<h2>分析結果 見たいものをクリックしてね!</h2>
 <div>
+
   <ul class="accordion-area">
-    <li>
-      <section>
-        <h3 class="title">総合分析</h3>
-        <div class="box">
-          <p>aaaaaa</p>
-        </div>
-      </section>
-    </li>
-    <li>
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
-          <p>aaaaaaa</p>
+          <div class="score-rate-area-wrapper-01">
+            <p>味方の得点率</p>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[0] | safe }}
+            </div>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[1] | safe }}
+            </div>
+          </div>
+          <div class="score-rate-area-wrapper-02">
+            <p>相手の得点率</p>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[2] | safe }}
+            </div>
+            <div class="score-rate-area">
+              {{ summary_df_score_rate[3] | safe }}
+            </div>
         </div>
       </section>
     </li>
     <li>
       <section>
         <h3 class="title">得点表</h3>
+
         <div class="box">
           <div>
             {% set ns = namespace(num=0) %}
@@ -65,6 +74,7 @@
               <br>
             {% endfor %}
           </div>
+
         </div>
       </section>
 
