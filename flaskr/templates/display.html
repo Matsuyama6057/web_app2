@@ -21,6 +21,7 @@
 <div>
 
   <ul class="accordion-area">
+    <li>  
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
@@ -101,6 +102,30 @@
           </div>
         </section>
 
+      </li>
+      <li>
+        <section>
+          <h3 class="title">打法出現率</h3>
+          <div class="box">
+            <div class="score-rate-area-wrapper-01">
+              <p>味方の打法出現率</p>
+              <div class="score-rate-area">
+                {{ summary_df_score_method_rate[0] | safe }}
+              </div>
+              <div class="score-rate-area">
+                {{ summary_df_score_method_rate[1] | safe }}
+              </div>
+            </div>
+            <div class="score-rate-area-wrapper-02">
+              <p>相手の打法出現率</p>
+              <div class="score-rate-area">
+                {{ summary_df_score_method_rate[2] | safe }}
+              </div>
+              <div class="score-rate-area">
+                {{ summary_df_score_method_rate[3] | safe }}
+              </div>
+          </div>
+        </section>
       </li>
   </ul>
 
