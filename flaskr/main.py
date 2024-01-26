@@ -353,260 +353,458 @@ def send():
 
 
 #----------得点率------------------------------
-    # 全パターン共通設定
-    # 得点率のデータフレームまとめ(4パターンを格納)
-    summary_df_score_rate = []
-
-    # 味方と相手の選手名を抽出
+    # 1.全パターン共通設定
+    # 1-1.抽出
+    # 選手名(味方・相手)を抽出
     first_player_name = df['名前'][0]
     for row in df['名前']:
         if first_player_name != row:
             second_player_name = row
             break
 
-    # 選手名をまとめたリスト
+    # 1-2.リスト
+    # 選手名リスト
     player_names = [first_player_name, second_player_name]
-
-    # ゲームカウントのパターンを抽出
-    game_count_pattern_list = [
+    
+    # ゲームカウントリスト
+    game_counts = [
         ["0:00"],
         ["0:01","1:00"],
         ["0:02","1:01","2:00"],
-        ["1:02","2:01"],
-        ["2,02"]
+        ["0:03","1:02","2:01","3:00"],
+        ["0:04","1:03","2:02","3:01","4:00"],
+        ["0:05","1:04","2:03","3:02","4:01","5:00"],
+        ["0:06","1:05","2:04","3:03","4:02","5:01","6:00"]
     ]
+    
 
+    # 2.データ処理
+    # 全データ処理リスト
+    summary_score_rate = []
 
-    # 味方と相手の処理を繰り返す
+    # 2-1.全ゲーム処理
+    # 全プレイヤー情報リスト
+    score_rate_players = []
+
     for player_name in player_names:
-        # (1)サーブ
-        # 得点率の表を作成
-        table_score_rate = [
+        # プレイヤー情報リスト
+        score_rate_player = []
+        
+        # 2-1-1.サーブ
+        # サーブ情報リスト
+        score_rate_serve = [
             [player_name,"","","",""],
-            ["Service","得点率","サーブ数","得点","失点"]
+            ["Service","得点率","本数","得点","失点"]
         ]
 
-        # ゲーム毎の得点率・サーブ数・得点・失点を計算
-        game_index = 1  # ゲーム毎のラベル用
-        for game_count_pattern in game_count_pattern_list:
-            count_serve = 0
-            count_my_point = 0
-            count_rival_point = 0
-            for i in range(len(df)):
-                for game_count in game_count_pattern:
-                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == game_count):  # サーブ数
-                        count_serve = count_serve + 1
-                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == game_count):  # 得点
-                        count_my_point = count_my_point + 1
-                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"00_01_GameCount"] == game_count):  # 失点
-                        count_rival_point = count_rival_point + 1
-
-            # 全数値が0でない時のみ、計算結果を表に追加
-            if (count_serve != 0) and (count_my_point != 0) and (count_rival_point != 0):
-                score_rate = count_my_point / (count_my_point + count_rival_point)  # 得点率
-                score_rate = "{:.1%}".format(score_rate)
-                table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
-            game_index = game_index + 1
-
-        # トータルの得点率・サーブ数・得点・失点を計算
-        count_serve = 0
-        count_my_point = 0
-        count_rival_point = 0
+        # 計算
+        count_all = 0
+        count_me = 0
+        count_rival = 0
         for i in range(len(df)):
-            if df.at[df.index[i],"01_SV_00"] == player_name:  # サーブ数
-                count_serve = count_serve + 1
+            if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let"):  # 本数
+                count_all = count_all + 1
             if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
-                count_my_point = count_my_point + 1
+                count_me = count_me + 1
             if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
-                count_rival_point = count_rival_point + 1
-        score_rate = count_my_point / (count_my_point + count_rival_point)  # 得点率
+                count_rival = count_rival + 1
+        score_rate = count_me / (count_me + count_rival)  # 得点率
         score_rate = "{:.1%}".format(score_rate)
-        table_score_rate.append(["Total",score_rate,count_serve,count_my_point,count_rival_point])
+        score_rate_serve.append(["Total",score_rate,count_all,count_me,count_rival])
 
-        # 得点率の表からデータフレームを作成
-        df_score_rate = pd.DataFrame(table_score_rate)
-        df_score_rate = df_score_rate.to_html(index=False,header=False)
-        summary_df_score_rate.append(df_score_rate)
+        # サーブ情報追加
+        score_rate_serve_df = pd.DataFrame(score_rate_serve)
+        score_rate_serve_df = score_rate_serve_df.to_html(index=False,header=False)
+        score_rate_player.append(score_rate_serve_df)
 
 
-        # (2)レシーブ
-        # 得点率の表を作成
-        table_score_rate = [
+        # 2-1-2.レシーブ
+        # レシーブ情報リスト
+        score_rate_receive = [
             [player_name,"","","",""],
-            ["Receive","得点率","レシーブ数","得点","失点"]
+            ["Receive","得点率","本数","得点","失点"]
         ]
 
-        # ゲーム毎の得点率・レシーブ数・得点・失点を計算
-        game_index = 1  # ゲーム毎のラベル用
-        for game_count_pattern in game_count_pattern_list:
-            count_serve = 0
-            count_my_point = 0
-            count_rival_point = 0
-            for i in range(len(df)):
-                for game_count in game_count_pattern:
-                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_01_GameCount"] == game_count):  # レシーブ数
-                        count_serve = count_serve + 1
-                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == game_count):  # 得点
-                        count_my_point = count_my_point + 1
-                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"00_01_GameCount"] == game_count):  # 失点
-                        count_rival_point = count_rival_point + 1
-
-            # 全数値が0でない時のみ、計算結果を表に追加
-            if (count_serve != 0) and (count_my_point != 0) and (count_rival_point != 0):
-                score_rate = count_my_point / (count_my_point + count_rival_point)  # 得点率
-                score_rate = "{:.1%}".format(score_rate)
-                table_score_rate.append(["{}ゲーム目".format(game_index),score_rate,count_serve,count_my_point,count_rival_point])
-            game_index = game_index + 1
-
-        # トータルの得点率・レシーブ数・得点・失点を計算
-        count_serve = 0
-        count_my_point = 0
-        count_rival_point = 0
+        # 計算
+        count_all = 0
+        count_me = 0
+        count_rival = 0
         for i in range(len(df)):
-            if df.at[df.index[i],"01_SV_00"] != player_name and (not pd.isna(df.at[df.index[i],"02_RV_02"])):  # レシーブ数
-                count_serve = count_serve + 1
-            if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
-                count_my_point = count_my_point + 1
-            if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
-                count_rival_point = count_rival_point + 1
-        score_rate = count_my_point / (count_my_point + count_rival_point)  # 得点率
+            if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let"):  # 本数
+                count_all = count_all + 1
+            if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
+                count_me = count_me + 1
+            if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
+                count_rival = count_rival + 1
+        score_rate = count_me / (count_me + count_rival)  # 得点率
         score_rate = "{:.1%}".format(score_rate)
-        table_score_rate.append(["Total",score_rate,count_serve,count_my_point,count_rival_point])
+        score_rate_receive.append(["Total",score_rate,count_all,count_me,count_rival])
+        
+        # レシーブ情報追加
+        score_rate_receive_df = pd.DataFrame(score_rate_receive)
+        score_rate_receive_df = score_rate_receive_df.to_html(index=False,header=False)
+        score_rate_player.append(score_rate_receive_df)
 
-        # 得点率の表からデータフレームを作成
-        df_score_rate = pd.DataFrame(table_score_rate)
-        df_score_rate = df_score_rate.to_html(index=False,header=False)
-        summary_df_score_rate.append(df_score_rate)
+        # プレイヤー情報追加
+        score_rate_players.append(score_rate_player)
+    
+    # 全プレイヤー情報追加
+    summary_score_rate.append(score_rate_players)
+    
+
+    # 2-2.ゲーム毎処理
+    for game_count in game_counts:
+        # 全プレイヤー情報リスト
+        score_rate_players = []
+
+        for player_name in player_names:
+            # プレイヤー情報リスト
+            score_rate_player = []
+            
+            # 2-1-1.サーブ
+            # サーブ情報リスト
+            score_rate_serve = [
+                [player_name,"","","",""],
+                ["Service","得点率","本数","得点","失点"]
+            ]
+
+            # 計算
+            count_all = 0
+            count_me = 0
+            count_rival = 0
+            for gc in game_count:
+                for i in range(len(df)):
+                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 本数
+                        count_all = count_all + 1
+                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 得点
+                        count_me = count_me + 1
+                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 失点
+                        count_rival = count_rival + 1
+            
+            # 本数が0でない時のみ、計算結果を追加
+            if count_all != 0:
+                score_rate = count_me / (count_me + count_rival)  # 得点率
+                score_rate = "{:.1%}".format(score_rate)
+                score_rate_serve.append(["Total",score_rate,count_all,count_me,count_rival])
+            else:
+                score_rate_serve = []
+
+            # サーブ情報追加
+            score_rate_serve_df = pd.DataFrame(score_rate_serve)
+            score_rate_serve_df = score_rate_serve_df.to_html(index=False,header=False)
+            score_rate_player.append(score_rate_serve_df)
+
+
+            # 2-1-2.レシーブ
+            # レシーブ情報リスト
+            score_rate_receive = [
+                [player_name,"","","",""],
+                ["Receive","得点率","本数","得点","失点"]
+            ]
+
+            # 計算
+            count_all = 0
+            count_me = 0
+            count_rival = 0
+            for gc in game_count:
+                for i in range(len(df)):
+                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 本数
+                        count_all = count_all + 1
+                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 得点
+                        count_me = count_me + 1
+                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 失点
+                        count_rival = count_rival + 1
+            
+            # 本数が0でない時のみ、計算結果を追加
+            if count_all != 0:
+                score_rate = count_me / (count_me + count_rival)  # 得点率
+                score_rate = "{:.1%}".format(score_rate)
+                score_rate_receive.append(["Total",score_rate,count_all,count_me,count_rival])
+            else:
+                score_rate_receive = []
+            
+            # レシーブ情報追加
+            score_rate_receive_df = pd.DataFrame(score_rate_receive)
+            score_rate_receive_df = score_rate_receive_df.to_html(index=False,header=False)
+            score_rate_player.append(score_rate_receive_df)
+
+            # プレイヤー情報追加
+            score_rate_players.append(score_rate_player)
+        
+        # 全プレイヤー情報追加
+        summary_score_rate.append(score_rate_players)
+        
+        # 空ゲームを削除
+        if count_all == 0:
+            del summary_score_rate[-1]
 #----------------------------------------------
 
 
 #----------打法出現率---------------------------
-    # 全パターン共通設定
-    # 打法出現率のデータフレームまとめ(2パターンを格納)
-    summary_df_score_method_rate = []
-
-    # 味方と相手の選手名を抽出
+    # 1.全パターン共通設定
+    # 1-1.抽出
+    # 選手名(味方・相手)を抽出
     first_player_name = df['名前'][0]
     for row in df['名前']:
         if first_player_name != row:
             second_player_name = row
             break
 
-    # 選手名をまとめたリスト
+    # 1-2.リスト
+    # 選手名リスト
     player_names = [first_player_name, second_player_name]
 
-    # 打法の種類をまとめたリスト
+    # 打法種類リスト
     service_score_methods = ["Side","(Side)","Back"]
     receive_score_methods = ["Stop","ドライブ","Push","Flick","Chiquita","ミユータ","空振り","不明"]
     
-    # ゲームカウントのパターンを抽出
-    game_count_pattern_list = [
+    # ゲームカウントリスト
+    game_counts = [
         ["0:00"],
         ["0:01","1:00"],
         ["0:02","1:01","2:00"],
-        ["1:02","2:01"],
-        ["2,02"]
+        ["0:03","1:02","2:01","3:00"],
+        ["0:04","1:03","2:02","3:01","4:00"],
+        ["0:05","1:04","2:03","3:02","4:01","5:00"],
+        ["0:06","1:05","2:04","3:03","4:02","5:01","6:00"]
     ]
+    
 
+    # 2.データ処理
+    # 全データ処理リスト
+    summary_score_method_rate = []
 
-    # 味方と相手の処理を繰り返す
+    # 2-1.全ゲーム処理
+    # 全プレイヤー情報リスト
+    score_method_rate_players = []
+
     for player_name in player_names:
-        # (1)サーブ
-        # 打法出現率の表を作成
-        table_score_method_rate = [
+        # プレイヤー情報リスト
+        score_method_rate_player = []
+        
+        # 2-1-1.サーブ
+        # サーブ情報リスト
+        score_method_rate_serve = [
             [player_name,"","","",""],
-            ["Service","本数","出現率","得点","失点"]
+            ["Service","出現率","本数","得点","失点"]
         ]
 
-        # 全打法の本数を計算
-        count_all_method_point = 0
+        # 全打法計算
+        count_all_method = 0
+        count_me = 0
+        count_rival = 0
         for i in range(len(df)):
-            if (df.at[df.index[i],"01_SV_00"] == player_name):
-                count_all_method_point = count_all_method_point + 1
-
-        # 打法ごとに個別の本数・得点・失点・出現率を計算
-        for service_score_method in service_score_methods:
-            count_one_method_point = 0
-            count_my_point = 0
-            count_rival_point = 0
-            for i in range(len(df)):
-                if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"01_SV_01"] == service_score_method):  # 個別の本数
-                    count_one_method_point = count_one_method_point + 1
-                if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"01_SV_01"] == service_score_method) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
-                    count_my_point = count_my_point + 1
-                if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"01_SV_01"] == service_score_method) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
-                    count_rival_point = count_rival_point + 1
-            score_method_rate = count_one_method_point / count_all_method_point  # 出現率
-            score_method_rate = "{:.1%}".format(score_method_rate)
-            table_score_method_rate.append([service_score_method,count_one_method_point,score_method_rate,count_my_point,count_rival_point])
-        
-        # 全打法の得点・失点・出現率を計算
-        count_my_point = 0
-        count_rival_point = 0
-        for i in range(len(df)):
+            if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let"):  # 本数
+                count_all_method = count_all_method + 1
             if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
-                count_my_point = count_my_point + 1
+                count_me = count_me + 1
             if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
-                count_rival_point = count_rival_point + 1
+                count_rival = count_rival + 1
         score_method_rate = 1  # 出現率
         score_method_rate = "{:.1%}".format(score_method_rate)
-        table_score_method_rate.append(["Total",count_all_method_point,score_method_rate,count_my_point,count_rival_point])
+        score_method_rate_serve.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
 
-        # 打法出現率の表からデータフレームを作成
-        df_score_method_rate = pd.DataFrame(table_score_method_rate)
-        df_score_method_rate = df_score_method_rate.to_html(index=False,header=False)
-        summary_df_score_method_rate.append(df_score_method_rate)
+        # 打法毎計算
+        for service_score_method in service_score_methods:
+            count_one_method = 0
+            count_me = 0
+            count_rival = 0
+            for i in range(len(df)):
+                if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"01_SV_01"] == service_score_method):  # 個別の本数
+                    count_one_method = count_one_method + 1
+                if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"01_SV_01"] == service_score_method):  # 得点
+                    count_me = count_me + 1
+                if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"01_SV_01"] == service_score_method):  # 失点
+                    count_rival = count_rival + 1
+            score_method_rate = count_one_method / count_all_method  # 出現率
+            score_method_rate = "{:.1%}".format(score_method_rate)
+            score_method_rate_serve.append([service_score_method,score_method_rate,count_one_method,count_me,count_rival])
+
+        # サーブ情報追加
+        score_method_rate_serve_df = pd.DataFrame(score_method_rate_serve)
+        score_method_rate_serve_df = score_method_rate_serve_df.to_html(index=False,header=False)
+        score_method_rate_player.append(score_method_rate_serve_df)
 
 
-        # (2)レシーブ
-        # 打法出現率の表を作成
-        table_score_method_rate = [
+        # 2-1-2.レシーブ
+        # レシーブ情報リスト
+        score_method_rate_receive = [
             [player_name,"","","",""],
-            ["Receive","本数","出現率","得点","失点"]
+            ["Receive","出現率","本数","得点","失点"]
         ]
 
-        # 全打法の本数を計算
-        count_all_method_point = 0
+        # 全打法計算
+        count_all_method = 0
+        count_me = 0
+        count_rival = 0
         for i in range(len(df)):
-            if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])):
-                count_all_method_point = count_all_method_point + 1
-
-        # 打法ごとに個別の本数・得点・失点・出現率を計算
-        for receive_score_method in receive_score_methods:
-            count_one_method_point = 0
-            count_my_point = 0
-            count_rival_point = 0
-            for i in range(len(df)):
-                if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"02_RV_02"] == receive_score_method):  # 個別の本数
-                    count_one_method_point = count_one_method_point + 1
-                if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"02_RV_02"] == receive_score_method) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
-                    count_my_point = count_my_point + 1
-                if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"02_RV_02"] == receive_score_method) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
-                    count_rival_point = count_rival_point + 1
-            score_method_rate = count_one_method_point / count_all_method_point  # 出現率
-            score_method_rate = "{:.1%}".format(score_method_rate)
-            table_score_method_rate.append([receive_score_method,count_one_method_point,score_method_rate,count_my_point,count_rival_point])
-        
-        # 全打法の得点・失点・出現率を計算
-        count_my_point = 0
-        count_rival_point = 0
-        for i in range(len(df)):
-            if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
-                count_my_point = count_my_point + 1
-            if (df.at[df.index[i],"01_SV_00"] != player_name) and (not pd.isna(df.at[df.index[i],"02_RV_02"])) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
-                count_rival_point = count_rival_point + 1
+            if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let"):  # 本数
+                count_all_method = count_all_method + 1
+            if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] == player_name):  # 得点
+                count_me = count_me + 1
+            if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
+                count_rival = count_rival + 1
         score_method_rate = 1  # 出現率
         score_method_rate = "{:.1%}".format(score_method_rate)
-        table_score_method_rate.append(["Total",count_all_method_point,score_method_rate,count_my_point,count_rival_point])
+        score_method_rate_receive.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
 
-        # 打法出現率の表からデータフレームを作成
-        df_score_method_rate = pd.DataFrame(table_score_method_rate)
-        df_score_method_rate = df_score_method_rate.to_html(index=False,header=False)
-        summary_df_score_method_rate.append(df_score_method_rate)
+        # 打法毎計算
+        for receive_score_method in receive_score_methods:
+            count_one_method = 0
+            count_me = 0
+            count_rival = 0
+            for i in range(len(df)):
+                if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"02_RV_02"] == receive_score_method):  # 個別の本数
+                    count_one_method = count_one_method + 1
+                if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"02_RV_02"] == receive_score_method):  # 得点
+                    count_me = count_me + 1
+                if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"02_RV_02"] == receive_score_method):  # 失点
+                    count_rival = count_rival + 1
+            score_method_rate = count_one_method / count_all_method  # 出現率
+            score_method_rate = "{:.1%}".format(score_method_rate)
+            score_method_rate_receive.append([receive_score_method,score_method_rate,count_one_method,count_me,count_rival])
+        
+        # レシーブ情報追加
+        score_method_rate_receive_df = pd.DataFrame(score_method_rate_receive)
+        score_method_rate_receive_df = score_method_rate_receive_df.to_html(index=False,header=False)
+        score_method_rate_player.append(score_method_rate_receive_df)
+
+        # プレイヤー情報追加
+        score_method_rate_players.append(score_method_rate_player)
+    
+    # 全プレイヤー情報追加
+    summary_score_method_rate.append(score_method_rate_players)
+    
+
+    # 2-2.ゲーム毎処理
+    for game_count in game_counts:
+        # 全プレイヤー情報リスト
+        score_method_rate_players = []
+
+        for player_name in player_names:
+            # プレイヤー情報リスト
+            score_method_rate_player = []
+            
+            # 2-1-1.サーブ
+            # サーブ情報リスト
+            score_method_rate_serve = [
+                [player_name,"","","",""],
+                ["Service","出現率","本数","得点","失点"]
+            ]
+
+            # 全打法計算
+            count_all_method = 0
+            count_me = 0
+            count_rival = 0
+            for gc in game_count:
+                for i in range(len(df)):
+                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 本数
+                        count_all_method = count_all_method + 1
+                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 得点
+                        count_me = count_me + 1
+                    if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 失点
+                        count_rival = count_rival + 1
+            
+            # 本数が0でない時のみ、計算結果を追加
+            if count_all_method != 0:
+                score_method_rate = 1  # 出現率
+                score_method_rate = "{:.1%}".format(score_method_rate)
+                score_method_rate_serve.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
+            else:
+                score_method_rate_serve = []
+
+            # 打法毎計算
+            for service_score_method in service_score_methods:
+                count_one_method = 0
+                count_me = 0
+                count_rival = 0
+                for gc in game_count:
+                    for i in range(len(df)):
+                        if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"01_SV_01"] == service_score_method) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 個別の本数
+                            count_one_method = count_one_method + 1
+                        if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"01_SV_01"] == service_score_method) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 得点
+                            count_me = count_me + 1
+                        if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"01_SV_01"] == service_score_method) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 失点
+                            count_rival = count_rival + 1
+            
+                # 本数が0でない時のみ、計算結果を追加
+                if count_all_method != 0:
+                    score_method_rate = count_one_method / count_all_method  # 出現率
+                    score_method_rate = "{:.1%}".format(score_method_rate)
+                    score_method_rate_serve.append([service_score_method,score_method_rate,count_one_method,count_me,count_rival])
+
+            # サーブ情報追加
+            score_method_rate_serve_df = pd.DataFrame(score_method_rate_serve)
+            score_method_rate_serve_df = score_method_rate_serve_df.to_html(index=False,header=False)
+            score_method_rate_player.append(score_method_rate_serve_df)
+
+
+            # 2-1-2.レシーブ
+            # レシーブ情報リスト
+            score_method_rate_receive = [
+                [player_name,"","","",""],
+                ["Receive","出現率","本数","得点","失点"]
+            ]
+
+            # 全打法計算
+            count_all_method = 0
+            count_me = 0
+            count_rival = 0
+            for gc in game_count:
+                for i in range(len(df)):
+                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 本数
+                        count_all_method = count_all_method + 1
+                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 得点
+                        count_me = count_me + 1
+                    if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 失点
+                        count_rival = count_rival + 1
+            
+            # 本数が0でない時のみ、計算結果を追加
+            if count_all_method != 0:
+                score_method_rate = 1  # 出現率
+                score_method_rate = "{:.1%}".format(score_method_rate)
+                score_method_rate_receive.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
+            else:
+                score_method_rate_receive = []
+
+            # 打法毎計算
+            for receive_score_method in receive_score_methods:
+                count_one_method = 0
+                count_me = 0
+                count_rival = 0
+                for gc in game_count:
+                    for i in range(len(df)):
+                        if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_04_#"] != "SV Let") and (df.at[df.index[i],"02_RV_02"] == receive_score_method) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 個別の本数
+                            count_one_method = count_one_method + 1
+                        if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] == player_name) and (df.at[df.index[i],"02_RV_02"] == receive_score_method) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 得点
+                            count_me = count_me + 1
+                        if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"02_RV_02"] == receive_score_method) and (df.at[df.index[i],"00_01_GameCount"] == gc):  # 失点
+                            count_rival = count_rival + 1
+                
+                # 本数が0でない時のみ、計算結果を追加
+                if count_all_method != 0:
+                    score_method_rate = count_one_method / count_all_method  # 出現率
+                    score_method_rate = "{:.1%}".format(score_method_rate)
+                    score_method_rate_receive.append([receive_score_method,score_method_rate,count_one_method,count_me,count_rival])
+            
+            # レシーブ情報追加
+            score_method_rate_receive_df = pd.DataFrame(score_method_rate_receive)
+            score_method_rate_receive_df = score_method_rate_receive_df.to_html(index=False,header=False)
+            score_method_rate_player.append(score_method_rate_receive_df)
+
+            # プレイヤー情報追加
+            score_method_rate_players.append(score_method_rate_player)
+        
+        # 全プレイヤー情報追加
+        summary_score_method_rate.append(score_method_rate_players)
+        
+        # 空ゲームを削除
+        if count_all_method == 0:
+            del summary_score_method_rate[-1]
 #----------------------------------------------
 
 
-    return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_df_score_rate=summary_df_score_rate, id=id, summary_df_score_method_rate=summary_df_score_method_rate)
+    return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_score_rate=summary_score_rate, id=id, summary_score_method_rate=summary_score_method_rate)
 #----------------------------------------------
 #----------ここまでデータ分析の記述--------------
 
