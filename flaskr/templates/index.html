@@ -30,34 +30,19 @@
   <tr align="center">
     <th>id</th>
     <th>日付</th>
-    <th>自チームの選手名</th>
-    <th>相手チームの選手名</th>
-    <th>自チームの選手の利き手</th>
-    <th>相手チームの選手の利き手</th>
+    <th>試合</th>
+    <th>利き手</th>
     <th>分析結果へ</th>
   </tr>
   {% for game in games %}
   <tr align="center">
     <td with="50">{{game.id}}</td>
     <td width="150">{{ game.day}}</td>
-    <td width="200">{{ game.name1}}</td>
-    <td width="200">{{ game.name2}}</td>
-    <td width="150">{{ game.right_left1}}</td>
-    <td width="150">{{ game.right_left2}}</td>
-
-
-        <form method="post" action="{{url_for('send')}}" enctype="multipart/form-data">
-          <td width="150">
-            <input type="hidden" name="id" value="{{game.id}}">
-            <input type="hidden" name="name1" value="{{game.name1}}">
-            <input type="hidden" name="name2" value="{{game.name2}}">
-            <input type="hidden" name="right_left1" value="{{game.right_left1}}">
-            <input type="hidden" name="right_left2" value="{{game.right_left2}}">
-            <input type="submit" value="{{game.id}}">
-          </td>
-        </form>
-
-
+    <td width="200">{{ game.name}}</td>
+    <td width="150">{{ game.right_left}}</td>
+    <form method="post" action="{{url_for('send')}}" enctype="multipart/form-data">
+    <td widht="150"><input type="submit" name="id" onclick="location.href='{{url_for('send')}}'" value="{{game.id}}"></td>
+    </form>
   </tr>
   {% endfor %}
 </table>
