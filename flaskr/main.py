@@ -203,7 +203,7 @@ def send():
 
         # (1)味方のコース図
         # フォントの設定
-        font_path = "arial.ttf"
+        font_path = "fonts/arial.ttf"
         font_size = 40
         font = ImageFont.truetype(font_path, font_size)
 
@@ -295,7 +295,7 @@ def send():
 
         # (2)相手のコース図
         # フォントの設定
-        font_path = "arial.ttf"
+        font_path = "fonts/arial.ttf"
         font_size = 40
         font = ImageFont.truetype(font_path, font_size)
 
