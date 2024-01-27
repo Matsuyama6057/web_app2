@@ -21,27 +21,39 @@
 <div>
 
   <ul class="accordion-area">
-    <li>
+    <li>  
       <section>
         <h3 class="title">得点率</h3>
         <div class="box">
-          <div class="score-rate-area-wrapper-01">
-            <p>味方の得点率</p>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[0] | safe }}
+          {% set ns = namespace(score_count=0) %}
+          {% for score_rate_players in summary_score_rate %}
+            {% if ns.score_count == 0 %}
+              <p class="score-text">Total</p>
+            {% else %}
+              <p class="score-text">ゲーム{{ ns.score_count }}</p>
+            {% endif %}
+            <div class="score-outer-wrap">
+              <p>プレイヤー1の得点率</p>
+              <div class="score-inner-wrap">
+                <div class="score-area">
+                  {{ score_rate_players[0][0] | safe }}
+                </div>
+                <div class="score-area">
+                  {{ score_rate_players[0][1] | safe }}
+                </div>
+              </div>
+              <p>プレイヤー2の得点率</p>
+              <div class="score-inner-wrap">
+                <div class="score-area">
+                  {{ score_rate_players[1][0] | safe }}
+                </div>
+                <div class="score-area">
+                  {{ score_rate_players[1][1] | safe }}
+                </div>
+              </div>
             </div>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[1] | safe }}
-            </div>
-          </div>
-          <div class="score-rate-area-wrapper-02">
-            <p>相手の得点率</p>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[2] | safe }}
-            </div>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[3] | safe }}
-            </div>
+            {% set ns.score_count = ns.score_count + 1 %}
+          {% endfor %}
         </div>
       </section>
     </li>
@@ -51,42 +63,38 @@
 
         <div class="box">
           <div>
-
-            {% set ns = namespace(num=0) %} {# 最初のゲームのためにnumを1に初期化 #}
-            {% set ns1 = namespace(game_num=1) %} {# 最初のゲームのためにgame_numを1に初期化 #}
+            {% set ns = namespace(num=0) %}
             {% for table in df_score_list %}
-              <p>{{ ns1.game_num  }}ゲーム</p>
               <table border="3">
                 {% for row in table %}
                   <tr>
                     <th>
-                      {% if ns.num % 2 == 0 %}
-                        {{ first }}
-                      {% else %}
-                        {{ second }}
-                      {% endif %}
+                      {%if ns.num%2==0%}
+                        {%print(first)%}
+                      {%endif%}
+                      {%if ns.num%2!=0%}
+                        {%print(second)%}
+                      {%endif%}
                       {% set ns.num = ns.num + 1 %}
-                      {% for item in row %}
+                      {% for item in row%}
                         <td>{{ item }}</td>
                       {% endfor %}
                     </th>
                   </tr>
                   <br>
                 {% endfor %}
-                {% set ns1.game_num = ns1.game_num + 1 %}
               </table>
               <br>
-
-              <br> {# 追加：改行を挿入してエラーを回避 #}
             {% endfor %}
           </div>
+
         </div>
       </section>
 
     </li>
     <li>
         <section>
-          <h3 class="title">サービスの第2バウンド位置のコース図</h3>
+          <h3 class="title">コース図</h3>
           <div class="box">
             <p>1ゲーム目</p>
             <p><img src="./static/images/plot0_f_{{ id }}.png"></p>
@@ -111,23 +119,35 @@
         <section>
           <h3 class="title">打法出現率</h3>
           <div class="box">
-            <div class="score-rate-area-wrapper-01">
-              <p>味方の打法出現率</p>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[0] | safe }}
+            {% set ns = namespace(score_count=0) %}
+            {% for score_method_rate_players in summary_score_method_rate %}
+              {% if ns.score_count == 0 %}
+                <p class="score-text">Total</p>
+              {% else %}
+                <p class="score-text">ゲーム{{ ns.score_count }}</p>
+              {% endif %}
+              <div class="score-outer-wrap">
+                <p>プレイヤー1の打法出現率</p>
+                <div class="score-inner-wrap">
+                  <div class="score-area">
+                    {{ score_method_rate_players[0][0] | safe }}
+                  </div>
+                  <div class="score-area">
+                    {{ score_method_rate_players[0][1] | safe }}
+                  </div>
+                </div>
+                <p>プレイヤー2の打法出現率</p>
+                <div class="score-inner-wrap">
+                  <div class="score-area">
+                    {{ score_method_rate_players[1][0] | safe }}
+                  </div>
+                  <div class="score-area">
+                    {{ score_method_rate_players[1][1] | safe }}
+                  </div>
+                </div>
               </div>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[1] | safe }}
-              </div>
-            </div>
-            <div class="score-rate-area-wrapper-02">
-              <p>相手の打法出現率</p>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[2] | safe }}
-              </div>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[3] | safe }}
-              </div>
+              {% set ns.score_count = ns.score_count + 1 %}
+            {% endfor %}
           </div>
         </section>
       </li>
