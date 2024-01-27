@@ -134,20 +134,15 @@ border-right: 1px solid black;
 background-color: lightgray;
 }
 
-.score-text {
-  color: white;
-  text-align: center;
-}
-.score-outer-wrap {
-  padding: 3%;
-  margin-bottom: 5%;
+.score-rate-area-wrapper-01 {
+  padding-bottom: 1%;
+  margin-bottom: 10%;
   background-color: lightgray;
 }
-.score-inner-wrap {
-  display: flex;
-  border: 2px solid black;
-  margin-bottom: 3%;
+.score-rate-area-wrapper-02 {
+  padding-bottom: 1%;
+  background-color: lightgray;
 }
-.score-area {
-  margin: 3% 3% 3%;
+.score-rate-area {
+  margin: 3% 5% 5%;
 }
