@@ -472,9 +472,13 @@ def send():
                 count_me = count_me + 1
             if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
                 count_rival = count_rival + 1
-        score_rate = count_me / (count_me + count_rival)  # 得点率
-        score_rate = "{:.1%}".format(score_rate)
-        score_rate_serve.append(["Total",score_rate,count_all,count_me,count_rival])
+        # 本数が0でない時のみ、計算結果を追加
+        if count_all != 0:
+            score_rate = count_me / count_all  # 得点率
+            score_rate = "{:.1%}".format(score_rate)
+            score_rate_serve.append(["Total",score_rate,count_all,count_me,count_rival])
+        else:
+            score_rate_serve = []
 
         # サーブ情報追加
         score_rate_serve_df = pd.DataFrame(score_rate_serve)
@@ -500,9 +504,14 @@ def send():
                 count_me = count_me + 1
             if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
                 count_rival = count_rival + 1
-        score_rate = count_me / (count_me + count_rival)  # 得点率
-        score_rate = "{:.1%}".format(score_rate)
-        score_rate_receive.append(["Total",score_rate,count_all,count_me,count_rival])
+        
+        # 本数が0でない時のみ、計算結果を追加
+        if count_all != 0:
+            score_rate = count_me / count_all  # 得点率
+            score_rate = "{:.1%}".format(score_rate)
+            score_rate_receive.append(["Total",score_rate,count_all,count_me,count_rival])
+        else:
+            score_rate_receive = []
         
         # レシーブ情報追加
         score_rate_receive_df = pd.DataFrame(score_rate_receive)
@@ -547,7 +556,7 @@ def send():
             
             # 本数が0でない時のみ、計算結果を追加
             if count_all != 0:
-                score_rate = count_me / (count_me + count_rival)  # 得点率
+                score_rate = count_me / count_all  # 得点率
                 score_rate = "{:.1%}".format(score_rate)
                 score_rate_serve.append(["Total",score_rate,count_all,count_me,count_rival])
             else:
@@ -581,7 +590,7 @@ def send():
             
             # 本数が0でない時のみ、計算結果を追加
             if count_all != 0:
-                score_rate = count_me / (count_me + count_rival)  # 得点率
+                score_rate = count_me / count_all  # 得点率
                 score_rate = "{:.1%}".format(score_rate)
                 score_rate_receive.append(["Total",score_rate,count_all,count_me,count_rival])
             else:
@@ -664,9 +673,14 @@ def send():
                 count_me = count_me + 1
             if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
                 count_rival = count_rival + 1
-        score_method_rate = 1  # 出現率
-        score_method_rate = "{:.1%}".format(score_method_rate)
-        score_method_rate_serve.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
+        
+        # 本数が0でない時のみ、計算結果を追加
+        if count_all_method != 0:
+            score_method_rate = 1  # 出現率
+            score_method_rate = "{:.1%}".format(score_method_rate)
+            score_method_rate_serve.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
+        else:
+            score_method_rate_serve = []
 
         # 打法毎計算
         for service_score_method in service_score_methods:
@@ -680,9 +694,12 @@ def send():
                     count_me = count_me + 1
                 if (df.at[df.index[i],"01_SV_00"] == player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"01_SV_01"] == service_score_method):  # 失点
                     count_rival = count_rival + 1
-            score_method_rate = count_one_method / count_all_method  # 出現率
-            score_method_rate = "{:.1%}".format(score_method_rate)
-            score_method_rate_serve.append([service_score_method,score_method_rate,count_one_method,count_me,count_rival])
+            
+            # 本数が0でない時のみ、計算結果を追加
+            if count_all_method != 0:
+                score_method_rate = count_one_method / count_all_method  # 出現率
+                score_method_rate = "{:.1%}".format(score_method_rate)
+                score_method_rate_serve.append([service_score_method,score_method_rate,count_one_method,count_me,count_rival])
 
         # サーブ情報追加
         score_method_rate_serve_df = pd.DataFrame(score_method_rate_serve)
@@ -708,9 +725,14 @@ def send():
                 count_me = count_me + 1
             if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])):  # 失点
                 count_rival = count_rival + 1
-        score_method_rate = 1  # 出現率
-        score_method_rate = "{:.1%}".format(score_method_rate)
-        score_method_rate_receive.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
+        
+        # 本数が0でない時のみ、計算結果を追加
+        if count_all_method != 0:
+            score_method_rate = 1  # 出現率
+            score_method_rate = "{:.1%}".format(score_method_rate)
+            score_method_rate_receive.append(["Total",score_method_rate,count_all_method,count_me,count_rival])
+        else:
+            score_method_rate_receive = []
 
         # 打法毎計算
         for receive_score_method in receive_score_methods:
@@ -724,9 +746,12 @@ def send():
                     count_me = count_me + 1
                 if (df.at[df.index[i],"01_SV_00"] != player_name) and (df.at[df.index[i],"00_03_Point"] != player_name) and (not pd.isna(df.at[df.index[i], "00_03_Point"])) and (df.at[df.index[i],"02_RV_02"] == receive_score_method):  # 失点
                     count_rival = count_rival + 1
-            score_method_rate = count_one_method / count_all_method  # 出現率
-            score_method_rate = "{:.1%}".format(score_method_rate)
-            score_method_rate_receive.append([receive_score_method,score_method_rate,count_one_method,count_me,count_rival])
+            
+            # 本数が0でない時のみ、計算結果を追加
+            if count_all_method != 0:
+                score_method_rate = count_one_method / count_all_method  # 出現率
+                score_method_rate = "{:.1%}".format(score_method_rate)
+                score_method_rate_receive.append([receive_score_method,score_method_rate,count_one_method,count_me,count_rival])
         
         # レシーブ情報追加
         score_method_rate_receive_df = pd.DataFrame(score_method_rate_receive)
