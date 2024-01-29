@@ -23,26 +23,40 @@
   <ul class="accordion-area">
     <li>
       <section>
+
         <h3 class="title">得点率</h3>
         <div class="box">
-          <div class="score-rate-area-wrapper-01">
-            <p>味方の得点率</p>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[0] | safe }}
+          {% set ns = namespace(score_count=0) %}
+          {% for score_rate_players in summary_score_rate %}
+            {% if ns.score_count == 0 %}
+              <p class="score-text">Total</p>
+            {% else %}
+              <p class="score-text">ゲーム{{ ns.score_count }}</p>
+            {% endif %}
+            <div class="score-outer-wrap">
+              <p>プレイヤー1の得点率</p>
+              <div class="score-inner-wrap">
+                <div class="score-area">
+                  {{ score_rate_players[0][0] | safe }}
+                </div>
+                <div class="score-area">
+                  {{ score_rate_players[0][1] | safe }}
+                </div>
+              </div>
+              <p>プレイヤー2の得点率</p>
+              <div class="score-inner-wrap">
+                <div class="score-area">
+                  {{ score_rate_players[1][0] | safe }}
+                </div>
+                <div class="score-area">
+                  {{ score_rate_players[1][1] | safe }}
+                </div>
+              </div>
             </div>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[1] | safe }}
-            </div>
-          </div>
-          <div class="score-rate-area-wrapper-02">
-            <p>相手の得点率</p>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[2] | safe }}
-            </div>
-            <div class="score-rate-area">
-              {{ summary_df_score_rate[3] | safe }}
-            </div>
+            {% set ns.score_count = ns.score_count + 1 %}
+          {% endfor %}
         </div>
+
       </section>
     </li>
     <li>
@@ -338,17 +352,17 @@
                         ctx.fillText(first_right_left, 250 + 350, 310 + i * 300 + offsetY);
                       }
 
-                      ctx.fillText(B_s, 20 + 218.75, 190 + 300 * i + 80 + offsetY);
-                      ctx.fillText(BM_s, 20 + 156.25, 190 + 300 * i + 80 + offsetY);
-                      ctx.fillText(FM_s, 20 + 93.75, 190 + 300 * i + 80 + offsetY);
-                      ctx.fillText(F_s, 20 + 31.25, 190 + 300 * i + 80 + offsetY);
-                      ctx.fillText(BS_s, 20 + 218.75, 140 + 300 * i + 80 + offsetY);
-                      ctx.fillText(BMS_s, 20 + 156.25, 140 + 300 * i + 80 + offsetY);
-                      ctx.fillText(FMS_s, 20 + 93.75, 140 + 300 * i + 80 + offsetY);
-                      ctx.fillText(FS_s, 20 + 31.25, 140 + 300 * i + 80 + offsetY);
+                      ctx.fillText(B_s, 20 + 218.75 + 350, 190 + 300 * i + 80 + offsetY);
+                      ctx.fillText(BM_s, 20 + 156.25 + 350, 190 + 300 * i + 80 + offsetY);
+                      ctx.fillText(FM_s, 20 + 93.75 + 350, 190 + 300 * i + 80 + offsetY);
+                      ctx.fillText(F_s, 20 + 31.25 + 350, 190 + 300 * i + 80 + offsetY);
+                      ctx.fillText(BS_s, 20 + 218.75 + 350, 140 + 300 * i + 80 + offsetY);
+                      ctx.fillText(BMS_s, 20 + 156.25 + 350, 140 + 300 * i + 80 + offsetY);
+                      ctx.fillText(FMS_s, 20 + 93.75 + 350, 140 + 300 * i + 80 + offsetY);
+                      ctx.fillText(FS_s, 20 + 31.25 + 350, 140 + 300 * i + 80 + offsetY);
 
-                      ctx.fillText(F_s_02sv, 20 + 62.5, 75 + 300 * i + 60 + offsetY);
-                      ctx.fillText(B_s_02sv, 20 + 187.5, 75 + 300 * i + 60 + offsetY);
+                      ctx.fillText(F_s_02sv, 20 + 62.5 + 350, 75 + 300 * i + 60 + offsetY);
+                      ctx.fillText(B_s_02sv, 20 + 187.5 + 350, 75 + 300 * i + 60 + offsetY);
 
 
                     }
@@ -367,26 +381,40 @@
       </li>
       <li>
         <section>
+
           <h3 class="title">打法出現率</h3>
           <div class="box">
-            <div class="score-rate-area-wrapper-01">
-              <p>味方の打法出現率</p>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[0] | safe }}
+            {% set ns = namespace(score_count=0) %}
+            {% for score_method_rate_players in summary_score_method_rate %}
+              {% if ns.score_count == 0 %}
+                <p class="score-text">Total</p>
+              {% else %}
+                <p class="score-text">ゲーム{{ ns.score_count }}</p>
+              {% endif %}
+              <div class="score-outer-wrap">
+                <p>プレイヤー1の打法出現率</p>
+                <div class="score-inner-wrap">
+                  <div class="score-area">
+                    {{ score_method_rate_players[0][0] | safe }}
+                  </div>
+                  <div class="score-area">
+                    {{ score_method_rate_players[0][1] | safe }}
+                  </div>
+                </div>
+                <p>プレイヤー2の打法出現率</p>
+                <div class="score-inner-wrap">
+                  <div class="score-area">
+                    {{ score_method_rate_players[1][0] | safe }}
+                  </div>
+                  <div class="score-area">
+                    {{ score_method_rate_players[1][1] | safe }}
+                  </div>
+                </div>
               </div>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[1] | safe }}
-              </div>
-            </div>
-            <div class="score-rate-area-wrapper-02">
-              <p>相手の打法出現率</p>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[2] | safe }}
-              </div>
-              <div class="score-rate-area">
-                {{ summary_df_score_method_rate[3] | safe }}
-              </div>
+              {% set ns.score_count = ns.score_count + 1 %}
+            {% endfor %}
           </div>
+
         </section>
       </li>
   </ul>
