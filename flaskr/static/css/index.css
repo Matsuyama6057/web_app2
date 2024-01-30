@@ -145,3 +145,65 @@ h1 {
 #keywords tbody tr td.lalign {
   text-align: center;
 }
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.menu-btn {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 15px;
+}
+
+.line {
+  width: 30px;
+  height: 3px;
+  background-color: #333;
+  margin: 5px 0;
+}
+
+.menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  background-color: #f1f1f1;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.menu a {
+  padding: 12px;
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.menu a:hover {
+  background-color: #ddd;
+}
+
+.menu-btn-right {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 15px;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.menu-right {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 60px; /* 調整が必要かもしれません */
+  right: 0;
+  background-color: #f1f1f1;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}

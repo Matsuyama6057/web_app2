@@ -23,6 +23,21 @@
     </nav>
   </form>
 </header>
+<div class="menu-btn-right" onclick="toggleMenu()">
+  <div class="line"></div>
+  <div class="line"></div>
+  <div class="line"></div>
+</div>
+
+<div class="menu menu-right">
+  <!-- ここにメニュー項目を追加 -->
+  <input type="button" onclick="location.href='{{ url_for('form')}}'" value="追加">
+  <input type="button" onclick="location.href='{{ url_for('delete')}}'" value="削除">
+</div>
+
+<script src="./static/js/index.js"></script>
+
+
 
 <div id="wrapper">
   <h1>分析結果のデータベース</h1>
@@ -84,18 +99,6 @@
  </div>
 </body>
 
-
-
-
-<div class="wrap">
-  <div class="box">
-    <input class="button" type="button" onclick="location.href='{{ url_for('form')}}'" value="追加">
-  </div>
-  <div class="box">
-    <input class="button" type="button" onclick="location.href='{{ url_for('delete')}}'" value="削除">
-  </div>
-</div>
-</div>
 
 
 

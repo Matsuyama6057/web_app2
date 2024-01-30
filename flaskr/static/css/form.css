@@ -1,41 +1,92 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, ul, li, form, table {
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    padding-top: 10%; /* ヘッダーの後ろに要素が隠れないようにするため */
+    font-family: Arial, sans-serif;
 }
 
 header {
-    width: 100%; /* 幅いっぱいを指定 */
-    height: 20%; /* 高さを50pxに指定 */
-    background: #88b3e3; /* 背景色にグレーを指定 */
-    padding: 20px 50px; /* ヘッダーに上下左右それぞれ余白を指定 */
-    box-sizing: border-box; /* padding分を含んで幅を100%にするため */
-    position: fixed; /* ウィンドウを基準に画面に固定 */
-    top: 0; /* 上下の固定位置を上から0pxにする */
-    left: 0; /* 左右の固定位置を左から0pxにする */
-    display: flex; /* 中の要素を横並びにする */
-    align-items: center; /* 中の要素を上下中央に並べる */
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
 }
 
-header .gnav .menu {
-    display: flex; /* 中の要素を横並びにする */
+h1 {
+    margin: 0;
 }
 
-header .gnav .menu li {
-    list-style: none; /* リストの[・]を消す */
+div {
+    margin-bottom: 20px;
 }
 
-header .gnav .menu li + li {
-    margin-left: 40px; /* メニューそれぞれに間隔をあけるため */
+h2 {
+    color: #333;
+    text-align: center;
 }
 
-main {
-    height: 100vw; /* スクロールの演出を見れるようにmainに高さを指定 */
+h3 {
+    color: #333;
+    text-align: center;
 }
 
+form {
+    max-width: 600px;
+    margin: 0 auto;
+}
 
-body{margin-top: 5%;
-    margin-left: 20%;}
+input, select, textarea {
+    margin-bottom: 10px;
+    padding: 8px;
+}
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
 
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="submit"], input[type="reset"] {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="reset"] {
+    background-color: #f44336;
+}
+
+/* Style radio buttons */
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 600px) {
+    form {
+        width: 90%;
+    }
+}
 
 
 
