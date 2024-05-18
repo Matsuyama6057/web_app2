@@ -30,8 +30,7 @@ cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
 result = cur.fetchone()
 if result:
     cur.execute("DROP TABLE users")
-    
-cur.close()
+
 con.commit()
 con.close()
 '''
@@ -58,7 +57,6 @@ def index():
     games = []
     for row in db_games:
         games.append({'id':row[0], 'day': row[1], 'name1': row[2], 'name2': row[3], 'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
-    cur.close()
     con.commit()
     con.close()
 
@@ -88,7 +86,6 @@ def sear():
     games = []
     for row in search_games:
         games.append({'id':row[0], 'day': row[1], 'name1': row[2], 'name2': row[3],'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
-    cur.close()
     con.commit()
     con.close()
     return render_template(
@@ -108,10 +105,9 @@ def send():
     con, cur = get_connection()
     cur.execute("SELECT * from games where id = (?)",
                 [id])
-    cur.close()
+    file_name= cur.fetchall()[0][6]
     con.commit()
     con.close()
-    file_name= cur.fetchall()[0][6]
 
 
 
@@ -803,7 +799,6 @@ def register():
         id+=1
     cur.execute('INSERT INTO games VALUES(?,?,?,?,?,?,?)',
                 [id,date,name1,name2,right_left1,right_left2,fileName])
-    cur.close()
     con.commit()
     con.close()
     return redirect(url_for('index'))
@@ -825,7 +820,6 @@ def post_delete():
     con, cur = get_connection()
     cur.execute("DELETE from games where id = (?)",
                 [number])
-    cur.close()
     con.commit()
     con.close()
     return redirect(url_for('index'))
