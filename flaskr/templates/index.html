@@ -31,6 +31,7 @@
 
 <div class="menu menu-right">
   <!-- ここにメニュー項目を追加 -->
+  <input type="button" onclick="location.href='{{ url_for('login_bp.logout')}}'" value="ログアウト">
   <input type="button" onclick="location.href='{{ url_for('form')}}'" value="追加">
   <input type="button" onclick="location.href='{{ url_for('delete')}}'" value="削除">
 </div>
@@ -98,19 +99,3 @@
 
  </div>
 </body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

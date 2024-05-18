@@ -7,31 +7,58 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import login_required, current_user
+
+from login import login_bp, login_manager
+from db import get_connection, create_tables
 
 
 app=Flask(__name__)
 
-DATABASE ='database.db'
-con = sqlite3.connect(DATABASE)
-cur = con.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS games (id int PRIMARY KEY, date date, name1 text, name2 text, right_left1 CHAR, right_left2 CHAR, contents mediumblob)")
-
+# データベースのテーブル作成
+create_tables()
 #----------テーブル全削除のときのみ使用----------
-'''con = sqlite3.connect(DATABASE)
-cur = con.cursor()
-cur.execute("DROP table games")'''
+'''
+con, cur = get_connection()
+
+# テーブルが存在する場合にのみ削除
+cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='games'")
+result = cur.fetchone()
+if result:
+    cur.execute("DROP TABLE games")
+cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+result = cur.fetchone()
+if result:
+    cur.execute("DROP TABLE users")
+    
+cur.close()
+con.commit()
+con.close()
+'''
+#----------------------------------------------
+
+
+#----------ログイン機能-------------------------
+app.secret_key = 'your_secret_key'  # セッションのためのシークレットキー
+
+# Flask-Loginの初期化
+login_manager.init_app(app)
+login_manager.login_view = 'login_bp.login'  # 未ログイン時のリダイレクト先
+
+# ブループリントの登録
+app.register_blueprint(login_bp)
 #----------------------------------------------
 
 
 @app.route('/')
+@login_required
 def index():
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS games (id int PRIMARY KEY, day text, name1 text, name2 text, right_left1 CHAR, right_left2 CHAR, contents mediumblob)")
+    con, cur = get_connection()
     db_games = cur.execute('SELECT * FROM games ORDER BY id DESC').fetchall()
     games = []
     for row in db_games:
         games.append({'id':row[0], 'day': row[1], 'name1': row[2], 'name2': row[3], 'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
+    cur.close()
     con.commit()
     con.close()
 
@@ -42,12 +69,11 @@ def index():
 
 
 @app.route('/sear', methods = ['post'])
+@login_required
 def sear():
     date = request.form['date']
     search = request.form['search']
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS games (id int PRIMARY KEY, day text, name1 text, name2 text, right_left1 CHAR, right_left2 CHAR, contents mediumblob)")
+    con, cur = get_connection()
     if len(date) == 0 and len(search) == 0:
         search_games = cur.execute('SELECT * FROM games ORDER BY id DESC').fetchall()
     elif len(date) != 0 and len(search) == 0:
@@ -62,6 +88,7 @@ def sear():
     games = []
     for row in search_games:
         games.append({'id':row[0], 'day': row[1], 'name1': row[2], 'name2': row[3],'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
+    cur.close()
     con.commit()
     con.close()
     return render_template(
@@ -71,16 +98,19 @@ def sear():
 
 
 @app.route('/send',methods = ['post','get'])
+@login_required
 def send():
     id = request.form['id']
     name1 = request.form['name1']
     name2 = request.form['name2']
     right_left1 = request.form['right_left1']
     right_left2 = request.form['right_left2']
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
+    con, cur = get_connection()
     cur.execute("SELECT * from games where id = (?)",
                 [id])
+    cur.close()
+    con.commit()
+    con.close()
     file_name= cur.fetchall()[0][6]
 
 
@@ -732,6 +762,7 @@ def send():
 
 
 @app.route('/form')
+@login_required
 def form():
     return render_template(
         'form.html'
@@ -739,6 +770,7 @@ def form():
 
 
 @app.route('/display')
+@login_required
 def display():
     return render_template(
         'display.html'
@@ -746,6 +778,7 @@ def display():
 
 
 @app.route('/register',methods = ['post','get'])
+@login_required
 def register():
     date = request.form['date']
     name1 = request.form['name1']
@@ -758,8 +791,7 @@ def register():
         for file in contents:
             fileName = file.filename
             file.save(fileName)
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
+    con, cur = get_connection()
     sql = "SELECT count(*) FROM games"
     cur.execute(sql)
     id=cur.fetchall()[0][0]
@@ -771,6 +803,7 @@ def register():
         id+=1
     cur.execute('INSERT INTO games VALUES(?,?,?,?,?,?,?)',
                 [id,date,name1,name2,right_left1,right_left2,fileName])
+    cur.close()
     con.commit()
     con.close()
     return redirect(url_for('index'))
@@ -778,6 +811,7 @@ def register():
 
 
 @app.route('/delete')
+@login_required
 def delete():
     return render_template(
         'delete.html'
@@ -785,12 +819,13 @@ def delete():
 
 
 @app.route('/post_delete',methods = ['post'])
+@login_required
 def post_delete():
     number=int(request.form['id'])
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
+    con, cur = get_connection()
     cur.execute("DELETE from games where id = (?)",
                 [number])
+    cur.close()
     con.commit()
     con.close()
     return redirect(url_for('index'))
