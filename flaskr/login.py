@@ -17,7 +17,6 @@ class User(UserMixin):
         con, cur = get_connection()
         cur.execute('SELECT id, username, password_hash FROM users WHERE username = ?', (username,))
         user_data = cur.fetchone()
-        cur.close()
         con.close()
         if user_data:
             return User(*user_data)
@@ -28,7 +27,6 @@ class User(UserMixin):
         con, cur = get_connection()
         cur.execute('SELECT id, username, password_hash FROM users WHERE id = ?', (user_id,))
         user_data = cur.fetchone()
-        cur.close()
         con.close()
         if user_data:
             return User(*user_data)
@@ -82,7 +80,6 @@ def user_register():
         # ユーザーをデータベースに追加
         con, cur = get_connection()
         cur.execute('INSERT INTO users (username, password_hash) VALUES (?, ?)', (username, password_hash))
-        cur.close()
         con.commit()
         con.close()
         
