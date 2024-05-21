@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者ログイン</title>
+</head>
+<body>
+    <h1>管理者ログイン</h1>
+    <form method="post">
+        <label for="username">ユーザー名:</label>
+        <input type="text" name="username" id="username" required>
+        <br>
+        <label for="password">パスワード:</label>
+        <input type="password" name="password" id="password" required>
+        <br>
+        <input type="submit" value="ログイン">
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

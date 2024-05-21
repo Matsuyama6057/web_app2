@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者ダッシュボード</title>
+</head>
+<body>
+    <h1>管理者ダッシュボード</h1>
+    <ul>
+        {% for user in users %}
+            <li>
+                {{ user[1] }} 
+                <form action="{{ url_for('login_bp.admin_delete_user', user_id=user[0]) }}" method="post" style="display:inline;">
+                    <input type="submit" value="削除">
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('login_bp.logout') }}">ログアウト</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>
