@@ -36,3 +36,9 @@ def create_tables():
     cur.close()
     con.commit()
     con.close()
+
+def add_is_admin_column():
+    con, cur = get_connection()
+    cur.execute('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE')
+    con.commit()
+    con.close()

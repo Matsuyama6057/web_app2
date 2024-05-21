@@ -773,7 +773,7 @@ def display():
     )
 
 
-@app.route('/register',methods = ['post','get'])
+@app.route('/register', methods = ['post','get'])
 @login_required
 def register():
     date = request.form['date']
@@ -783,22 +783,32 @@ def register():
     right_left2 = request.form['right_left2']
     contents = request.files.getlist('contents')
 
+    # ディレクトリパスを設定
+    upload_folder = os.path.join('files')
+    
+    # ディレクトリが存在しない場合、作成する
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+
     if contents:
         for file in contents:
             fileName = file.filename
-            file.save(fileName)
+            file_path = os.path.join(upload_folder, fileName)
+            file.save(file_path)
+
     con, cur = get_connection()
     sql = "SELECT count(*) FROM games"
     cur.execute(sql)
-    id=cur.fetchall()[0][0]
-    if id!=0:
+    id = cur.fetchall()[0][0]
+    if id != 0:
         sql = "SELECT max(id) from games"
         cur.execute(sql)
-        id=cur.fetchall()[0][0]+1
+        id = cur.fetchall()[0][0] + 1
     else:
-        id+=1
+        id += 1
+        
     cur.execute('INSERT INTO games VALUES(?,?,?,?,?,?,?)',
-                [id,date,name1,name2,right_left1,right_left2,fileName])
+                [id,date,name1,name2,right_left1,right_left2,file_path])
     con.commit()
     con.close()
     return redirect(url_for('index'))
