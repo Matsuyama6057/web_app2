@@ -1,7 +1,7 @@
 import sqlite3
 import time
 
-DATABASE ='database.db'
+DATABASE ='data/database.db'
 
 def get_connection():
     retries = 5
@@ -32,13 +32,8 @@ def create_tables():
     cur.execute('''CREATE TABLE IF NOT EXISTS users
                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,
-                    password_hash TEXT NOT NULL)''')
+                    password_hash TEXT NOT NULL,
+                    is_admin BOOLEAN DEFAULT FALSE)''')
     cur.close()
-    con.commit()
-    con.close()
-
-def add_is_admin_column():
-    con, cur = get_connection()
-    cur.execute('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE')
     con.commit()
     con.close()

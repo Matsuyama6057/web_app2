@@ -105,7 +105,8 @@ def send():
     con, cur = get_connection()
     cur.execute("SELECT * from games where id = (?)",
                 [id])
-    file_name= cur.fetchall()[0][6]
+    data_folder = os.path.join('data/files')
+    file_name= os.path.join(data_folder, cur.fetchall()[0][6])
     con.commit()
     con.close()
 
@@ -784,7 +785,7 @@ def register():
     contents = request.files.getlist('contents')
 
     # ディレクトリパスを設定
-    upload_folder = os.path.join('files')
+    upload_folder = os.path.join('data/files')
     
     # ディレクトリが存在しない場合、作成する
     if not os.path.exists(upload_folder):
@@ -808,7 +809,7 @@ def register():
         id += 1
         
     cur.execute('INSERT INTO games VALUES(?,?,?,?,?,?,?)',
-                [id,date,name1,name2,right_left1,right_left2,file_path])
+                [id,date,name1,name2,right_left1,right_left2,fileName])
     con.commit()
     con.close()
     return redirect(url_for('index'))
