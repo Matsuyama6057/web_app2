@@ -3,6 +3,8 @@ import time
 
 DATABASE ='data/database.db'
 
+
+# DBとの接続
 def get_connection():
     retries = 5
     while retries > 0:
@@ -19,6 +21,8 @@ def get_connection():
                 raise
     raise sqlite3.OperationalError("Unable to connect to the database after multiple attempts")
 
+
+# テーブル作成
 def create_tables():
     con, cur = get_connection()
     cur.execute('''CREATE TABLE IF NOT EXISTS games

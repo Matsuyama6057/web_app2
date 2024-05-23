@@ -15,9 +15,11 @@ from db import get_connection, create_tables
 
 app=Flask(__name__)
 
+#----------テーブル関連-------------------------
 # データベースのテーブル作成
 create_tables()
-#----------テーブル全削除のときのみ使用----------
+
+# テーブル全削除(コメントアウト)
 '''
 con, cur = get_connection()
 
@@ -49,6 +51,8 @@ app.register_blueprint(login_bp)
 #----------------------------------------------
 
 
+#----------ホーム機能---------------------------
+# ホーム
 @app.route('/')
 @login_required
 def index():
@@ -66,6 +70,7 @@ def index():
     )
 
 
+# データ検索
 @app.route('/sear', methods = ['post'])
 @login_required
 def sear():
@@ -92,11 +97,101 @@ def sear():
         'index.html',
         games=games
     )
+#----------------------------------------------
 
 
+#----------データ登録機能-----------------------
+# データ登録画面
+@app.route('/form')
+@login_required
+def form():
+    return render_template(
+        'form.html'
+    )
+
+
+# データ登録処理
+@app.route('/register', methods = ['post','get'])
+@login_required
+def register():
+    date = request.form['date']
+    name1 = request.form['name1']
+    name2 = request.form['name2']
+    right_left1 = request.form['right_left1']
+    right_left2 = request.form['right_left2']
+    contents = request.files.getlist('contents')
+
+    # ディレクトリパスを設定
+    upload_folder = os.path.join('data/files')
+    
+    # ディレクトリが存在しない場合、作成する
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+
+    if contents:
+        for file in contents:
+            fileName = file.filename
+            file_path = os.path.join(upload_folder, fileName)
+            file.save(file_path)
+
+    con, cur = get_connection()
+    sql = "SELECT count(*) FROM games"
+    cur.execute(sql)
+    id = cur.fetchall()[0][0]
+    if id != 0:
+        sql = "SELECT max(id) from games"
+        cur.execute(sql)
+        id = cur.fetchall()[0][0] + 1
+    else:
+        id += 1
+        
+    cur.execute('INSERT INTO games VALUES(?,?,?,?,?,?,?)',
+                [id,date,name1,name2,right_left1,right_left2,fileName])
+    con.commit()
+    con.close()
+    return redirect(url_for('index'))
+#----------------------------------------------
+
+
+#----------データ削除機能-----------------------
+# データ削除画面
+@app.route('/delete')
+@login_required
+def delete():
+    return render_template(
+        'delete.html'
+    )
+
+
+# データ削除処理
+@app.route('/post_delete',methods = ['post'])
+@login_required
+def post_delete():
+    number=int(request.form['id'])
+    con, cur = get_connection()
+    cur.execute("DELETE from games where id = (?)",
+                [number])
+    con.commit()
+    con.close()
+    return redirect(url_for('index'))
+#----------------------------------------------
+
+
+#----------データ分析機能-----------------------
+# データ分析画面
+@app.route('/display')
+@login_required
+def display():
+    return render_template(
+        'display.html'
+    )
+
+
+# 分析処理
 @app.route('/send',methods = ['post','get'])
 @login_required
 def send():
+    # 変数設定
     id = request.form['id']
     name1 = request.form['name1']
     name2 = request.form['name2']
@@ -110,16 +205,12 @@ def send():
     con.commit()
     con.close()
 
-
-
-#----------データ分析の記述---------------------
-#----------データの読み込みおよびファイルパス設定-----------------------------
+    # データ読み込み、パス設定
     df = pd.read_csv(file_name)
     dirname = "static/images/"
     os.makedirs(dirname, exist_ok=True)
-#----------------------------------------------
 
-#選手名前および利き手を取得
+    # 選手名・利き手を取得
     first=df['名前'][0]
     for i in range(len(df['名前'])):
         if df['名前'][i]!=first:
@@ -144,11 +235,8 @@ def send():
     second_right_left=right_left2
 
 
-
-
-#----------コース図-----------------------------
-
-
+    # 1.得点計算
+    # 1-1.ゲームカウント・総得点数の取得
     score1=[]
     score2=[]
 
@@ -162,15 +250,13 @@ def send():
         i+=1
     sum=i
 
+    # 1-2.各選手の得点・総得点リストの計算
     first_score=[]
     second_score=[]
     first_result=[]
     second_result=[]
     sv03=[]
     sv03_score=[]
-
-
-
     score_name=[]
 
     for i in range(sum):
@@ -178,7 +264,6 @@ def send():
             first_result.append(first_score)
             second_result.append(second_score)
             sv03.append(sv03_score)
-
 
             first_score=[]
             second_score=[]
@@ -198,118 +283,8 @@ def send():
     second_result.append(second_score)
     sv03.append(sv03_score)
 
-    first_sv03_course=[]
-    first_sv02_course=[]
-    second_sv03_course=[]
-    second_sv02_course=[]
-    for i in range(len(sv03)):
-        F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s=map(int,[0]*16)
-        F_f_sv02,B_f_sv02,F_s_sv02,B_s_sv02=map(int,[0]*4)
-        if i==0:
-            tmp_j=0
-        if i>0:
-            tmp_j=len(sv03[i-1])
 
-        for j in range(tmp_j,tmp_j+len(sv03[i])):
-            row1=df['01_SV_03'][j]
-            row2=df['01_SV_02'][j]
-            if df['名前'][j]==first:
-                if row1=="F":
-                    F_f+=1
-                elif row1=="FM":
-                    FM_f+=1
-                elif row1=="BM":
-                    BM_f+=1
-                elif row1=="B":
-                    B_f+=1
-                elif row1=="FS":
-                    FS_f+=1
-                elif row1=="FMS":
-                    FMS_f+=1
-                elif row1=="BMS":
-                    BMS_f+=1
-                elif row1=="BS":
-                    BS_f+=1
-
-                if row2=="F":
-                    F_f_sv02+=1
-                elif row2=="B":
-                    B_f_sv02+=1
-
-
-            if df['名前'][j]==second:
-                if row1=="F":
-                    F_s+=1
-                elif row1=="FM":
-                    FM_s+=1
-                elif row1=="BM":
-                    BM_s+=1
-                elif row1=="B":
-                    B_s+=1
-                elif row1=="FS":
-                    FS_s+=1
-                elif row1=="FMS":
-                    FMS_s+=1
-                elif row1=="BMS":
-                    BMS_s+=1
-                elif row1=="BS":
-                    BS_s+=1
-
-                if row2=="F":
-                    F_s_sv02+=1
-                elif row2=="B":
-                    B_s_sv02+=1
-
-        first_sv03_course.append([F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f])
-        first_sv02_course.append([F_f_sv02,B_f_sv02])
-
-        second_sv03_course.append([F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s])
-        second_sv02_course.append([F_s_sv02,B_s_sv02])
-
-    first_sv03_course_len=len(first_sv03_course)
-    second_sv03_course_len=len(second_sv03_course)
-    first_sv02_course_len=len(first_sv02_course)
-    second_sv02_course_len=len(second_sv02_course)
-
-#------------得点表----------------------------------------------
-
-    for i in range(len(first_result)):
-        first_num=0
-        second_num=0
-        for j in range(len(first_result[i])):
-            if first_result[i][j]!=-1:
-                first_num+=1
-                first_result[i][j]=first_num
-            else:
-                first_result[i][j]=" "
-            if second_result[i][j]!=-1:
-                second_num+=1
-                second_result[i][j]=second_num
-            else:
-                second_result[i][j]=" "
-
-
-
-    first_score_data=[]
-    second_score_data=[]
-    for i in range(len(first_result)):
-        first_score_data.append(first_result[i])
-        second_score_data.append(second_result[i])
-    data_score=[]
-    for i in range(len(first_score_data)):
-        data_score.append({first:first_score_data[i],second:second_score_data[i]})
-    df_score_list=[]
-    i=0
-    for data in data_score:
-        data=pd.DataFrame(data)
-        df_score_list.append(data.transpose())
-        i+=1
-    tmp=len(first)-len(second)
-
-#----------------------------------------------
-
-
-#----------得点率------------------------------
+    #----------得点率--------------------------
     # 1.全パターン共通設定
     # 1-1.抽出
     # 選手名(味方・相手)を抽出
@@ -486,8 +461,121 @@ def send():
         # 空ゲームを削除
         if count_all == 0:
             del summary_score_rate[-1]
-#----------------------------------------------
-#----------打法出現率---------------------------
+    #------------------------------------------
+
+
+    #------------得点表-------------------------
+    for i in range(len(first_result)):
+        first_num=0
+        second_num=0
+        for j in range(len(first_result[i])):
+            if first_result[i][j]!=-1:
+                first_num+=1
+                first_result[i][j]=first_num
+            else:
+                first_result[i][j]=" "
+            if second_result[i][j]!=-1:
+                second_num+=1
+                second_result[i][j]=second_num
+            else:
+                second_result[i][j]=" "
+
+
+    first_score_data=[]
+    second_score_data=[]
+    for i in range(len(first_result)):
+        first_score_data.append(first_result[i])
+        second_score_data.append(second_result[i])
+    data_score=[]
+    for i in range(len(first_score_data)):
+        data_score.append({first:first_score_data[i],second:second_score_data[i]})
+    df_score_list=[]
+    i=0
+    for data in data_score:
+        data=pd.DataFrame(data)
+        df_score_list.append(data.transpose())
+        i+=1
+    tmp=len(first)-len(second)
+    #------------------------------------------
+
+
+    #----------コース図-------------------------
+    first_sv03_course=[]
+    first_sv02_course=[]
+    second_sv03_course=[]
+    second_sv02_course=[]
+    for i in range(len(sv03)):
+        F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f,F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s=map(int,[0]*16)
+        F_f_sv02,B_f_sv02,F_s_sv02,B_s_sv02=map(int,[0]*4)
+        if i==0:
+            tmp_j=0
+        if i>0:
+            tmp_j=len(sv03[i-1])
+
+        for j in range(tmp_j,tmp_j+len(sv03[i])):
+            row1=df['01_SV_03'][j]
+            row2=df['01_SV_02'][j]
+            if df['名前'][j]==first:
+                if row1=="F":
+                    F_f+=1
+                elif row1=="FM":
+                    FM_f+=1
+                elif row1=="BM":
+                    BM_f+=1
+                elif row1=="B":
+                    B_f+=1
+                elif row1=="FS":
+                    FS_f+=1
+                elif row1=="FMS":
+                    FMS_f+=1
+                elif row1=="BMS":
+                    BMS_f+=1
+                elif row1=="BS":
+                    BS_f+=1
+
+                if row2=="F":
+                    F_f_sv02+=1
+                elif row2=="B":
+                    B_f_sv02+=1
+
+
+            if df['名前'][j]==second:
+                if row1=="F":
+                    F_s+=1
+                elif row1=="FM":
+                    FM_s+=1
+                elif row1=="BM":
+                    BM_s+=1
+                elif row1=="B":
+                    B_s+=1
+                elif row1=="FS":
+                    FS_s+=1
+                elif row1=="FMS":
+                    FMS_s+=1
+                elif row1=="BMS":
+                    BMS_s+=1
+                elif row1=="BS":
+                    BS_s+=1
+
+                if row2=="F":
+                    F_s_sv02+=1
+                elif row2=="B":
+                    B_s_sv02+=1
+
+        first_sv03_course.append([F_f,FM_f,BM_f,B_f,FS_f,FMS_f,BMS_f,BS_f])
+        first_sv02_course.append([F_f_sv02,B_f_sv02])
+
+        second_sv03_course.append([F_s,FM_s,BM_s,B_s,FS_s,FMS_s,BMS_s,BS_s])
+        second_sv02_course.append([F_s_sv02,B_s_sv02])
+
+    first_sv03_course_len=len(first_sv03_course)
+    second_sv03_course_len=len(second_sv03_course)
+    first_sv02_course_len=len(first_sv02_course)
+    second_sv02_course_len=len(second_sv02_course)
+    #------------------------------------------
+
+    
+    #----------打法出現率-----------------------
     # 1.全パターン共通設定
     # 1-1.抽出
     # 選手名(味方・相手)を抽出
@@ -744,9 +832,10 @@ def send():
         # 空ゲームを削除
         if count_all_method == 0:
             del summary_score_method_rate[-1]
-#----------------------------------------------
+    #------------------------------------------
 
-#----------------------------------------------
+
+    # 全データをreturn
     return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_score_rate=summary_score_rate, id=id, summary_score_method_rate=summary_score_method_rate,
                            first_sv03_course=first_sv03_course,second_sv03_course=second_sv03_course,
                            first_sv02_course=first_sv02_course,second_sv02_course=second_sv02_course,
@@ -755,86 +844,8 @@ def send():
                            first_right_left=first_right_left,second_right_left=second_right_left,
                            score_name=score_name)
 #----------------------------------------------
-#----------ここまでデータ分析の記述--------------
 
 
-@app.route('/form')
-@login_required
-def form():
-    return render_template(
-        'form.html'
-    )
-
-
-@app.route('/display')
-@login_required
-def display():
-    return render_template(
-        'display.html'
-    )
-
-
-@app.route('/register', methods = ['post','get'])
-@login_required
-def register():
-    date = request.form['date']
-    name1 = request.form['name1']
-    name2 = request.form['name2']
-    right_left1 = request.form['right_left1']
-    right_left2 = request.form['right_left2']
-    contents = request.files.getlist('contents')
-
-    # ディレクトリパスを設定
-    upload_folder = os.path.join('data/files')
-    
-    # ディレクトリが存在しない場合、作成する
-    if not os.path.exists(upload_folder):
-        os.makedirs(upload_folder)
-
-    if contents:
-        for file in contents:
-            fileName = file.filename
-            file_path = os.path.join(upload_folder, fileName)
-            file.save(file_path)
-
-    con, cur = get_connection()
-    sql = "SELECT count(*) FROM games"
-    cur.execute(sql)
-    id = cur.fetchall()[0][0]
-    if id != 0:
-        sql = "SELECT max(id) from games"
-        cur.execute(sql)
-        id = cur.fetchall()[0][0] + 1
-    else:
-        id += 1
-        
-    cur.execute('INSERT INTO games VALUES(?,?,?,?,?,?,?)',
-                [id,date,name1,name2,right_left1,right_left2,fileName])
-    con.commit()
-    con.close()
-    return redirect(url_for('index'))
-
-
-
-@app.route('/delete')
-@login_required
-def delete():
-    return render_template(
-        'delete.html'
-    )
-
-
-@app.route('/post_delete',methods = ['post'])
-@login_required
-def post_delete():
-    number=int(request.form['id'])
-    con, cur = get_connection()
-    cur.execute("DELETE from games where id = (?)",
-                [number])
-    con.commit()
-    con.close()
-    return redirect(url_for('index'))
-
-
+# 起動処理
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)

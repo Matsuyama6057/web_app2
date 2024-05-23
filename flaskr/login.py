@@ -6,6 +6,8 @@ from db import get_connection
 
 login_bp = Blueprint('login_bp', __name__)
 
+
+# ユーザークラス
 class User(UserMixin):
     def __init__(self, id, username, password_hash, is_admin=False):
         self.id = id
@@ -117,6 +119,7 @@ def delete_user(user_id):
 
 
 #----------管理者機能---------------------------
+# 管理者ログイン
 @login_bp.route('/admin_login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -133,6 +136,7 @@ def admin_login():
     return render_template('admin_login.html')
 
 
+# 管理者ダッシュボード
 @login_bp.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
@@ -147,6 +151,7 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', users=users)
 
 
+# ユーザー削除
 @login_bp.route('/admin_delete_user/<int:user_id>', methods=['POST'])
 @login_required
 def admin_delete_user(user_id):
