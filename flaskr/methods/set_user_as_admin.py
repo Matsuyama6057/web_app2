@@ -18,4 +18,4 @@ def set_user_as_admin(username):
 if __name__ == "__main__":
     username = 'admin'  # 管理者にするユーザー名
     set_user_as_admin(username)
-    print(f"{username} は管理者に設定されました。")
+    print(f"{username} has been set to Administrator!")
