@@ -2,80 +2,81 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <title>データ登録</title>
     <link rel="stylesheet" href="/static/css/form.css">
-    <title>情報登録</title>
     <style>
         div {
             margin-bottom: 20px;
         }
     </style>
 </head>
-
 <body>
-  <header>
-      <h1>卓球分析</h1>
-  </header>
+    <header>
+        <h1>卓球分析</h1>
+    </header>
 
-  <div>
-      <h3>アップロードするファイルの選択と情報の入力をお願いします<br>必ずファイルはCSVファイルをアップロードしてください</h3>
-  </div>
+    <div>
+        <h3>アップロードするファイルの選択と情報の入力をお願いします<br>必ずファイルはCSVファイルをアップロードしてください</h3>
+    </div>
 
-  <div>
-      <form id="myForm" method="post" action="{{url_for('register')}}" enctype="multipart/form-data" onsubmit="return validateForm()">
-          <input type="file" name="contents" multiple>
-          <table border="1">
-              <tr>
-                  <th>日付</th>
-                  <th>選手名（味方）</th>
-                  <th>選手名（相手）</th>
-                  <th>利き手（味方）</th>
-                  <th>利き手（相手）</th>
-              </tr>
-              <tr>
-                  <td><input type="date" name="date" required></td>
-                  <td><input type="text" name="name1" required></td>
-                  <td><input type="text" name="name2" required></td>
-                  <td><input type="radio" name="right_left1" value="右" checked>右
-                      <input type="radio" name="right_left1" value="左">左
-                  </td>
-                  <td><input type="radio" name="right_left2" value="右" checked>右
-                      <input type="radio" name="right_left2" value="左">左
-                  </td>
-              </tr>
-          </table>
-  </div>
-  <div>
-      <input type="submit" value="登録する">
-      <label>
-          <input type="reset" value="リセットする">
-      </label>
-      </form>
-      <div id="error-message" style="color: red;"></div>
+    <div>
+        <form id="myForm" method="post" action="{{ url_for('register') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <input type="file" name="contents" multiple>
+            <table border="1">
+                <tr>
+                    <th>日付</th>
+                    <th>選手名（味方）</th>
+                    <th>選手名（相手）</th>
+                    <th>利き手（味方）</th>
+                    <th>利き手（相手）</th>
+                </tr>
+                <tr>
+                    <td><input type="date" name="date" required></td>
+                    <td><input type="text" name="name1" required></td>
+                    <td><input type="text" name="name2" required></td>
+                    <td>
+                        <input type="radio" name="right_left1" value="右" checked>右
+                        <input type="radio" name="right_left1" value="左">左
+                    </td>
+                    <td>
+                        <input type="radio" name="right_left2" value="右" checked>右
+                        <input type="radio" name="right_left2" value="左">左
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <input type="submit" value="登録する">
+                <label>
+                    <input type="reset" value="リセットする">
+                </label>
+            </div>
+        </form>
+        <div id="error-message" style="color: red;"></div>
+    </div>
 
-      <script>
-          function validateForm() {
-              var date = document.forms["myForm"]["date"].value;
-              var name1 = document.forms["myForm"]["name1"].value;
-              var name2 = document.forms["myForm"]["name2"].value;
-              var fileInput = document.forms["myForm"]["contents"];
-              var errorMessage = document.getElementById("error-message");
+    <script>
+        function validateForm() {
+            var date = document.forms["myForm"]["date"].value;
+            var name1 = document.forms["myForm"]["name1"].value;
+            var name2 = document.forms["myForm"]["name2"].value;
+            var fileInput = document.forms["myForm"]["contents"];
+            var errorMessage = document.getElementById("error-message");
 
-              // ファイル未選択またはCSVファイル以外の場合
-              if (fileInput.files.length === 0 || !fileInput.files[0].name.endsWith('.csv')) {
-                  errorMessage.innerText = "ファイルが選択されていないか、CSVファイルではありません。";
-                  return false;
-              }
+            // ファイル未選択またはCSVファイル以外の場合
+            if (fileInput.files.length === 0 || !fileInput.files[0].name.endsWith('.csv')) {
+                errorMessage.innerText = "ファイルが選択されていないか、CSVファイルではありません。";
+                return false;
+            }
 
-              // 日付、選手名1、選手名2のどれかが未入力の場合
-              if (date === "" || name1 === "" || name2 === "") {
-                  errorMessage.innerText = "何も入力されていません。";
-                  return false;
-              }
+            // 日付、選手名1、選手名2のどれかが未入力の場合
+            if (date === "" || name1 === "" || name2 === "") {
+                errorMessage.innerText = "何も入力されていません。";
+                return false;
+            }
 
-              errorMessage.innerText = "";  // エラーメッセージをクリア
-              return true;
-          }
-      </script>
-  </div>
+            errorMessage.innerText = "";  // エラーメッセージをクリア
+            return true;
+        }
+    </script>
 </body>
 </html>

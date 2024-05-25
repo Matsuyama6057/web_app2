@@ -3,28 +3,27 @@
 /*==================================================
 アコーディオンのためのcss
 ===================================*/
-
-/*アコーディオン全体*/
-.accordion-area{
+/* アコーディオン全体 */
+.accordion-area {
     list-style: none;
     width: 100%;
     max-width: 1000px;
-    margin:0 auto;
+    margin: 0 auto;
 }
 
-.accordion-area li{
+.accordion-area li {
     margin: 10px 0;
 }
 
 .accordion-area section {
-  border: 5px solid #333;
+    border: 5px solid #333;
 }
 
 /*アコーディオンタイトル*/
 .title {
-    position: relative;/*+マークの位置基準とするためrelative指定*/
+    position: relative;  /* +マークの位置基準とするためrelative指定 */
     cursor: pointer;
-    font-size:1.5rem;
+    font-size: 1.5rem;
     font-weight: normal;
     padding: 3% 3% 3% 50px;
     transition: all .5s ease;
@@ -32,122 +31,129 @@
 
 /*アイコンの＋と×*/
 .title::before,
-.title::after{
+.title::after {
     position: absolute;
-    content:'';
+    content: '';
     width: 15px;
     height: 2px;
     background-color: #333;
-
 }
-.title::before{
-    top:48%;
+
+.title::before {
+    top: 48%;
     left: 20px;
     transform: rotate(0deg);
-
 }
-.title::after{
-    top:48%;
+
+.title::after {
+    top: 48%;
     left: 20px;
     transform: rotate(90deg);
-
 }
+
 /*　closeというクラスがついたら形状変化　*/
-.title.close::before{
-  transform: rotate(45deg);
+.title.close::before {
+    transform: rotate(45deg);
 }
 
-.title.close::after{
-  transform: rotate(-45deg);
+.title.close::after {
+    transform: rotate(-45deg);
 }
 
 /*アコーディオンで現れるエリア*/
 .box {
-    display: none;/*はじめは非表示*/
+    display: none; /*はじめは非表示*/
     background: #999999fe;
-    margin:0 3% 3% 3%;
+    margin: 0 3% 3% 3%;
     padding: 10%;
 }
 
 /*========= レイアウトのためのCSS ===============*/
-
-
-h2{
+h2 {
     text-align: center;
     margin: 30px 0;
-    font-size:1.5rem;
-}
-form{
-  font-size:1.0rem;
-  padding: 3%;
+    font-size: 1.5rem;
 }
 
-textarea{
-  font-size:1.0rem;
-  border: 2px solid #333;
+form {
+    font-size: 1.0rem;
+    padding: 3%;
 }
 
-input[type="submit"]{
-  appearance: none;
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: none;
-  border-radius: 0;
-  outline: none;
+textarea {
+    font-size: 1.0rem;
+    border: 2px solid #333;
 }
-.button{
-  font-size:1.0rem;
-  position: relative;
-  display: block;
-  padding: 1em 1em 1em 1em;
-  width: 300px;
-  color: #000000;
-  line-height: 1;
-  text-align: center;
-  background: #7FFFD4;
-  border-radius: 1.5em;
-  margin-left: 2%;
-  margin-bottom: 500px;
-  border: 2px solid #333;
+
+input[type="submit"] {
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    outline: none;
+}
+
+.button {
+    font-size: 1.0rem;
+    position: relative;
+    display: block;
+    padding: 1em 1em 1em 1em;
+    width: 300px;
+    color: #000000;
+    line-height: 1;
+    text-align: center;
+    background: #7FFFD4;
+    border-radius: 1.5em;
+    margin-left: 2%;
+    margin-bottom: 500px;
+    border: 2px solid #333;
 }
 
 span {
-  display: inline-block;
-  text-indent: -1rem;
-  position: relative;
+    display: inline-block;
+    text-indent: -1rem;
+    position: relative;
 }
+
 table {
-  border-collapse: collapse;
-  width: 100%;
+    border-collapse: collapse;
+    width: 100%;
 }
+
 th, td {
-  border: 1px solid black;
-  padding: 8px;
-  text-align: center;
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
 }
+
 th {
-  background-color: lightgray;
+    background-color: lightgray;
 }
-td{
-border-right: 1px solid black;
-background-color: lightgray;
+
+td {
+    border-right: 1px solid black;
+    background-color: lightgray;
 }
 
 .score-text {
-  color: white;
-  text-align: center;
+    color: white;
+    text-align: center;
 }
+
 .score-outer-wrap {
-  padding: 3%;
-  margin-bottom: 5%;
-  background-color: lightgray;
+    padding: 3%;
+    margin-bottom: 5%;
+    background-color: lightgray;
 }
+
 .score-inner-wrap {
-  display: flex;
-  border: 2px solid black;
-  margin-bottom: 3%;
+    display: flex;
+    border: 2px solid black;
+    margin-bottom: 3%;
 }
+
 .score-area {
-  margin: 3% 3% 3%;
+    margin: 3% 3% 3%;
 }

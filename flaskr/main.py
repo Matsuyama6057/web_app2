@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # 必要なモジュールのインポート
 import os
 import sqlite3
