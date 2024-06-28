@@ -2,18 +2,21 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>管理者ログイン</title>
+    <title>ログイン</title>
 </head>
 <body>
-    <h1>管理者ログイン</h1>
-    <form method="post">
+    <h1>ログイン</h1>
+    <form method="POST">
         <label for="username">ユーザー名:</label>
-        <input type="text" name="username" id="username" required>
+        <input type="text" id="username" name="username" required>
         <br>
         <label for="password">パスワード:</label>
-        <input type="password" name="password" id="password" required>
+        <input type="password" id="password" name="password" required>
         <br>
-        <input type="submit" value="ログイン">
+        <button type="submit">送信</button>
+        <br>
+        <button type="button" onclick="location.href='{{ url_for('login_bp.register_user')}}'">ユーザ登録</button>
+        <button type="button" onclick="location.href='{{ url_for('login_bp.list_user')}}'">ユーザ削除</button>
     </form>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

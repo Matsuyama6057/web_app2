@@ -7,5 +7,5 @@ services:
     ports:
       - 8090:5000
     volumes:
-      - ./flaskr:/home/flaskr
+      - ./ttvisual:/home/ttvisual
     command: python3 main.py 

@@ -2,21 +2,20 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>管理者ダッシュボード</title>
+    <title>ユーザー削除</title>
 </head>
 <body>
-    <h1>管理者ダッシュボード</h1>
+    <h1>ユーザー削除</h1>
     <ul>
         {% for user in users %}
-            <li>
-                {{ user[1] }} 
-                <form action="{{ url_for('login_bp.admin_delete_user', user_id=user[0]) }}" method="post" style="display:inline;">
-                    <input type="submit" value="削除">
+            <li>{{ user['id'] }} - {{ user['username'] }}
+                <form action="{{ url_for('login_bp.delete_user', user_id=user['id']) }}" method="post" style="display:inline;">
+                    <button type="submit">削除</button>
                 </form>
             </li>
         {% endfor %}
     </ul>
-    <a href="{{ url_for('login_bp.logout') }}">ログアウト</a>
+    <button type="button" onclick="location.href='{{ url_for('login_bp.login')}}'">ログインページへ</button>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <ul>
