@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 # 必要なモジュールのインポート
 import os
-import sqlite3
 
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw, ImageFont
 from flask import Flask, render_template, request, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from login import login_bp, login_manager
 from db import get_connection, create_tables, delete_tables

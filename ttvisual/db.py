@@ -48,10 +48,10 @@ def create_tables():
 def delete_tables():
     con, cur = get_connection()
 
-    cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='xxx'")
     result = cur.fetchone()
     if result:
-        cur.execute("DROP TABLE users")
+        cur.execute("DROP TABLE xxx")
 
     con.commit()
     con.close()
