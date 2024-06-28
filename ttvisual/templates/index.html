@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ホーム</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <style>
+        #example {
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <form method="post" action="{{url_for('sear')}}" enctype="multipart/form-data">
+            <nav class="gnav">
+                <ul class="menu">
+                    <li>
+                        <label>年/月/日：<input type="date" name="date"></label>
+                    </li>
+                    <li>
+                        <input type="search" name="search" autocomplete="on" list="list">
+                    </li>
+                    <input type="submit" value="検索">
+                </ul>
+            </nav>
+        </form>
+    </header>
+
+    <div class="menu-btn-right" onclick="toggleMenu()">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <div class="menu menu-right">
+        <!-- ここにメニュー項目を追加 -->
+        <input type="button" onclick="location.href='{{ url_for('login_bp.logout') }}'" value="ログアウト">
+        <input type="button" onclick="location.href='{{ url_for('form') }}'" value="追加">
+        <input type="button" onclick="location.href='{{ url_for('delete') }}'" value="削除">
+    </div>
+
+    <script src="./static/js/index.js"></script>
+
+    <div id="wrapper">
+        <h1>分析結果のデータベース</h1>
+        <table id="keywords" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr align="center">
+                    <th>id</span></th>
+                    <th><span>日付</span></th>
+                    <th><span>選手名（味方）</span></th>
+                    <th><span>選手名（相手）</span></th>
+                    <th><span>利き手（味方）</span></th>
+                    <th><span>利き手（相手）</span></th>
+                    <th><span>分析結果へ</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in games %}
+                    <tr align="center">
+                        <td class="lalign" width="50">{{ game.id }}</td>
+                        <td class="lalign" width="150">{{ game.day }}</td>
+                        <td class="lalign" width="200">{{ game.name1 }}</td>
+                        <td class="lalign" width="200">{{ game.name2 }}</td>
+                        <td class="lalign" width="150">
+                            {% if game.right_left1 == '右' %}
+                                <img src="./static/images/raketto_r2.png">
+                            {% endif %}
+                            {% if game.right_left1 == '左' %}
+                                <img src="./static/images/raketto_b2.png">
+                            {% endif %}
+                        </td>
+                        <td class="lalign" width="150">
+                            {% if game.right_left2 == '右' %}
+                                <img src="./static/images/raketto_r2.png">
+                            {% endif %}
+                            {% if game.right_left2 == '左' %}
+                                <img src="./static/images/raketto_b2.png">
+                            {% endif %}
+                        </td>
+                        <td width="150">
+                            <form method="post" action="{{url_for('send')}}" enctype="multipart/form-data">
+                                <input type="hidden" name="id" value="{{ game.id }}">
+                                <input type="hidden" name="name1" value="{{ game.name1 }}">
+                                <input type="hidden" name="name2" value="{{ game.name2 }}">
+                                <input type="hidden" name="right_left1" value="{{ game.right_left1 }}">
+                                <input type="hidden" name="right_left2" value="{{ game.right_left2 }}">
+                                <input type="submit" value="{{ game.id }}">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
