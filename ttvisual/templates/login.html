@@ -15,8 +15,10 @@
         <br>
         <button type="submit">送信</button>
         <br>
+        <!--
         <button type="button" onclick="location.href='{{ url_for('login_bp.register_user')}}'">ユーザ登録</button>
         <button type="button" onclick="location.href='{{ url_for('login_bp.list_user')}}'">ユーザ削除</button>
+        -->
     </form>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
