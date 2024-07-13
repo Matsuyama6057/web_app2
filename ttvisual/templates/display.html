@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>分析結果</title>
-    <!--==============レイアウトを制御する独自のCSSを読み込み===============-->
-    <link rel="stylesheet" type="text/css" href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/display.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/back.css">
-    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-</head>
-<body>
+{% extends "layout/base.html" %}
+
+{% block title %}
+    分析結果
+{% endblock %}
+
+{% block header %}
+    {{ super() }}
+{% endblock %}
+
+{% block main %}
     <div class="bg_pattern Paper_v2"></div>
     <div class="section">
         <style>
@@ -358,5 +356,8 @@
         </div>
         <input class="button" type="button" onclick="location.href='{{ url_for('index')}}'" value="データベースへ">
     </div>
-</body>
-</html>
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}

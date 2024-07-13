@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>データ削除</title>
-    <link rel="stylesheet" href="/static/css/form.css">
-</head>
-<body>
-    <header>
-        <h1>卓球分析</h1>
-    </header>
+{% extends "layout/base.html" %}
 
+{% block title %}
+    データ削除
+{% endblock %}
+
+{% block header %}
+    {{ super() }}
+
+    <h1>卓球分析</h1>
+{% endblock %}
+
+{% block main %}
     <div>
         <h2>削除したいデータベースのidを入力してください</h2>
     </div>
@@ -33,12 +34,15 @@
             </label>
         </div>
     </form>
+{% endblock %}
 
+{% block footer %}
+    {{ super() }}
+    
     <script>
         function confirmDelete() {
             var id = document.forms[0]["id"].value;
             return confirm("id " + id + " を本当に削除しますか？");
         }
     </script>
-</body>
-</html>
+{% endblock %}

@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ログイン</title>
-</head>
-<body>
+{% extends "layout/base.html" %}
+
+{% block title %}
+    ログイン
+{% endblock %}
+
+{% block header %}
+    {{ super() }}
+
     <h1>ログイン</h1>
+{% endblock %}
+
+{% block main %}
     <form method="POST">
         <label for="username">ユーザー名:</label>
         <input type="text" id="username" name="username" required>
@@ -15,19 +20,11 @@
         <br>
         <button type="submit">送信</button>
         <br>
-        <!--
         <button type="button" onclick="location.href='{{ url_for('login_bp.register_user')}}'">ユーザ登録</button>
         <button type="button" onclick="location.href='{{ url_for('login_bp.list_user')}}'">ユーザ削除</button>
-        -->
     </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-</body>
-</html>
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}

@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>データ登録</title>
-    <link rel="stylesheet" href="/static/css/form.css">
-    <style>
-        div {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>卓球分析</h1>
-    </header>
+{% extends "layout/base.html" %}
 
+{% block title %}
+    データ登録
+{% endblock %}
+
+{% block header %}
+    {{ super() }}
+
+    <h1>卓球分析</h1>
+{% endblock %}
+
+{% block main %}
     <div>
         <h3>アップロードするファイルの選択と情報の入力をお願いします<br>必ずファイルはCSVファイルをアップロードしてください</h3>
     </div>
@@ -53,7 +49,11 @@
         </form>
         <div id="error-message" style="color: red;"></div>
     </div>
+{% endblock %}
 
+{% block footer %}
+    {{ super() }}
+    
     <script>
         function validateForm() {
             var date = document.forms["myForm"]["date"].value;
@@ -78,5 +78,4 @@
             return true;
         }
     </script>
-</body>
-</html>
+{% endblock %}

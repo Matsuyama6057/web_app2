@@ -1,32 +1,28 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ホーム</title>
-    <link rel="stylesheet" href="/static/css/index.css">
-    <style>
-        #example {
-            margin: auto;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <form method="post" action="{{url_for('sear')}}" enctype="multipart/form-data">
-            <nav class="gnav">
-                <ul class="menu">
-                    <li>
-                        <label>年/月/日：<input type="date" name="date"></label>
-                    </li>
-                    <li>
-                        <input type="search" name="search" autocomplete="on" list="list">
-                    </li>
-                    <input type="submit" value="検索">
-                </ul>
-            </nav>
-        </form>
-    </header>
+{% extends "layout/base.html" %}
 
+{% block title %}
+    ホーム
+{% endblock %}
+
+{% block header %}
+    {{ super() }}
+
+    <form method="post" action="{{url_for('sear')}}" enctype="multipart/form-data">
+        <nav class="gnav">
+            <ul class="menu">
+                <li>
+                    <label>年/月/日：<input type="date" name="date"></label>
+                </li>
+                <li>
+                    <input type="search" name="search" autocomplete="on" list="list">
+                </li>
+                <input type="submit" value="検索">
+            </ul>
+        </nav>
+    </form>
+{% endblock %}
+
+{% block main %}
     <div class="menu-btn-right" onclick="toggleMenu()">
         <div class="line"></div>
         <div class="line"></div>
@@ -39,8 +35,6 @@
         <input type="button" onclick="location.href='{{ url_for('form') }}'" value="追加">
         <input type="button" onclick="location.href='{{ url_for('delete') }}'" value="削除">
     </div>
-
-    <script src="./static/js/index.js"></script>
 
     <div id="wrapper">
         <h1>分析結果のデータベース</h1>
@@ -94,5 +88,8 @@
             </tbody>
         </table>
     </div>
-</body>
-</html>
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}
