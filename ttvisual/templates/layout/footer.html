@@ -4,7 +4,13 @@
     {% if messages %}
         <div>
             {% for category, message in messages %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert"> <!-- ここを alert-danger に変更 -->
+                {% if category == 'success' %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {% elif category == 'error' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {% else %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {% endif %}
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
