@@ -10,42 +10,45 @@
 
 {% block main %}
     <div class="bg_pattern Paper_v2"></div>
-    <div class="section">
-        <style>
-            #example {
-                margin: auto;
-            }
-        </style>
-        <h2>分析結果 見たいものをクリックしてね!</h2>
+    <div class="container mt-5">
+        <div class="text-center">
+            <h2 class="mb-3">分析結果</h3>
+            <h5 class="mb-4">見たいデータをクリックして下さい</h5>
+        </div>
+
         <div>
-            <ul class="accordion-area">
-                <li>
-                    <section>
-                        <h3 class="title">得点率</h3>
-                        <div class="box">
+            <ul class="accordion list-unstyled" id="analysisAccordion">
+                <li class="accordion-item">
+                    <h2 class="accordion-header" id="headingScoreRate">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseScoreRate" aria-expanded="true" aria-controls="collapseScoreRate">
+                            得点率
+                        </button>
+                    </h2>
+                    <div id="collapseScoreRate" class="accordion-collapse collapse show" aria-labelledby="headingScoreRate" data-bs-parent="#analysisAccordion">
+                        <div class="accordion-body">
                             {% set ns = namespace(score_count=0) %}
                             {% for score_rate_players in summary_score_rate %}
                                 {% if ns.score_count == 0 %}
-                                    <p class="score-text">Total</p>
+                                    <p class="score-text fw-bold">Total</p>
                                 {% else %}
-                                    <p class="score-text">ゲーム{{ ns.score_count }}</p>
+                                    <p class="score-text fw-bold">ゲーム {{ ns.score_count }}</p>
                                 {% endif %}
-                                <div class="score-outer-wrap">
-                                    <p>プレイヤー1の得点率</p>
-                                    <div class="score-inner-wrap">
-                                        <div class="score-area">
+                                <div class="score-outer-wrap mb-4">
+                                    <p class="fw-bold">プレイヤー1の得点率</p>
+                                    <div class="score-inner-wrap row">
+                                        <div class="score-area col-6">
                                             {{ score_rate_players[0][0] | safe }}
                                         </div>
-                                        <div class="score-area">
+                                        <div class="score-area col-6">
                                             {{ score_rate_players[0][1] | safe }}
                                         </div>
                                     </div>
-                                    <p>プレイヤー2の得点率</p>
-                                    <div class="score-inner-wrap">
-                                        <div class="score-area">
+                                    <p class="fw-bold">プレイヤー2の得点率</p>
+                                    <div class="score-inner-wrap row">
+                                        <div class="score-area col-6">
                                             {{ score_rate_players[1][0] | safe }}
                                         </div>
-                                        <div class="score-area">
+                                        <div class="score-area col-6">
                                             {{ score_rate_players[1][1] | safe }}
                                         </div>
                                     </div>
@@ -53,80 +56,67 @@
                                 {% set ns.score_count = ns.score_count + 1 %}
                             {% endfor %}
                         </div>
-                    </section>
+                    </div>
                 </li>
-                <li>
-                    <section>
-                        <h3 class="title">得点表</h3>
-                        <div class="box">
+                <li class="accordion-item">
+                    <h2 class="accordion-header" id="headingScoreTable">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseScoreTable" aria-expanded="false" aria-controls="collapseScoreTable">
+                            得点表
+                        </button>
+                    </h2>
+                    <div id="collapseScoreTable" class="accordion-collapse collapse" aria-labelledby="headingScoreTable" data-bs-parent="#analysisAccordion">
+                        <div class="accordion-body">
                             <div>
                                 {% set ns = namespace(num=0) %}
                                 {% set ns1 = namespace(game_num=1) %}
                                 {% for table in df_score_list %}
-                                    <p>{{ ns1.game_num }}ゲーム</p>
-                                    <table border="3">
+                                    <h5>{{ ns1.game_num }}ゲーム</h5>
+                                    <table class="table table-bordered">
                                         {% for row in table %}
                                             <tr>
                                                 <th>
-                                                    {% if ns.num % 2 == 0 %}
+                                                    {% if ns.num % 2 == 0 %} 
                                                         {{ first }}
                                                     {% else %}
                                                         {{ second }}
                                                     {% endif %}
-
                                                     {% set ns2 = namespace(num2=0) %}
-                                                    {% set ns2.num2 = 0 %}
                                                     {% for item in row %}
                                                         {% if ns1.game_num % 2 == 1 %}
                                                             {% if ns.num % 2 == 0 %}
-                                                                {% if score_name[ns2.num2] == first %}
-                                                                    <td style="background-color: pink;">{{ item }}</td>
-                                                                {% else %}
-                                                                    <td >{{ item }}</td>
-                                                                {% endif %}
+                                                                <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                             {% else %}
-                                                                {% if score_name[ns2.num2] == second %}
-                                                                    <td style="background-color: pink;">{{ item }}</td>
-                                                                {% else %}
-                                                                    <td >{{ item }}</td>
-                                                                {% endif %}
+                                                                <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                             {% endif %}
-                                                            {% set ns2.num2 = ns2.num2 + 1 %}
                                                         {% elif ns1.game_num % 2 == 0 %}
                                                             {% if ns.num % 2 == 0 %}
-                                                                {% if score_name[ns2.num2] == second %}
-                                                                <td style="background-color: pink;">{{ item }}</td>
-                                                                {% else %}
-                                                                <td >{{ item }}</td>
-                                                                {% endif %}
+                                                                <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                             {% else %}
-                                                                {% if score_name[ns2.num2] == first %}
-                                                                    <td style="background-color: pink;">{{ item }}</td>
-                                                                {% else %}
-                                                                    <td >{{ item }}</td>
-                                                                {% endif %}
+                                                                <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                             {% endif %}
-                                                            {% set ns2.num2 = ns2.num2 + 1 %}
                                                         {% endif %}
+                                                        {% set ns2.num2 = ns2.num2 + 1 %}
                                                     {% endfor %}
                                                     {% set ns.num = ns.num + 1 %}
                                                 </th>
                                             </tr>
-                                            <br>
                                         {% endfor %}
                                         {% set ns1.game_num = ns1.game_num + 1 %}
                                     </table>
                                     <br>
-                                    <br>
                                 {% endfor %}
                             </div>
                         </div>
-                    </section>
+                    </div>
                 </li>
-                <li>
-                    <section>
-                        <h3 class="title">サービスのコース図</h3>
-                        <div class="box">
+                <li class="accordion-item">
+                    <h2 class="accordion-header" id="headingServiceCourse">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServiceCourse" aria-expanded="false" aria-controls="collapseServiceCourse">
+                            サービスのコース図
+                        </button>
+                    </h2>
+                    <div id="collapseServiceCourse" class="accordion-collapse collapse" aria-labelledby="headingServiceCourse" data-bs-parent="#analysisAccordion">
+                        <div class="accordion-body">
                             <canvas id="tableTennisCourt" width="800"></canvas>
                             <script>
                                 var canvas = document.getElementById('tableTennisCourt');
@@ -203,121 +193,74 @@
 
                                     if (first_right_left == "右"){
                                         ctx.fillText(first_right_left, 250, 70 + i * 300 + offsetY);
-                                        if (second_right_left == "右"){
-                                            ctx.fillText(second_right_left, 30, 310 + i * 300 + offsetY);
-                                        }else{
-                                            ctx.fillText(second_right_left, 250, 310 + i * 300 + offsetY);
-                                        }
-                                        ctx.fillText(F_f, 20 + 218.75, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FM_f, 20 + 156.25, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BM_f, 20 + 93.75, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(B_f, 20 + 31.25, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FS_f, 20 + 218.75, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FMS_f, 20 + 156.25, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BMS_f, 20 + 93.75, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BS_f, 20 + 31.25, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(B_f_02sv, 20 + 62.5, 75 + 300 * i + 60 + offsetY);
-                                        ctx.fillText(F_f_02sv, 20 + 187.5, 75 + 300 * i + 60 + offsetY);
+                                        ctx.moveTo(370, 50 + i * 300 + offsetY);
+                                        ctx.lineTo(370, 150 + i * 300 + offsetY);
+                                        ctx.stroke();
+                                        ctx.moveTo(370, 300 + i * 300 + offsetY);
+                                        ctx.lineTo(370, 400 + i * 300 + offsetY);
+                                        ctx.stroke();
+                                    } else {
+                                        ctx.fillText(first_right_left, 70, 70 + i * 300 + offsetY);
+                                        ctx.moveTo(100, 50 + i * 300 + offsetY);
+                                        ctx.lineTo(100, 150 + i * 300 + offsetY);
+                                        ctx.stroke();
+                                        ctx.moveTo(100, 300 + i * 300 + offsetY);
+                                        ctx.lineTo(100, 400 + i * 300 + offsetY);
+                                        ctx.stroke();
                                     }
 
-                                    if (first_right_left == "左"){
-                                        ctx.fillText(first_right_left, 30, 70 + i * 300 + offsetY);
-                                        if (second_right_left == "右"){
-                                            ctx.fillText(second_right_left, 30, 310 + i * 300 + offsetY);
-                                        }else{
-                                            ctx.fillText(second_right_left, 250, 310 + i * 300 + offsetY);
-                                        }
-                                        ctx.fillText(B_f, 20 + 218.75, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BM_f, 20 + 156.25, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FM_f, 20 + 93.75, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(F_f, 20 + 31.25, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BS_f, 20 + 218.75, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BMS_f, 20 + 156.25, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FMS_f, 20 + 93.75, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FS_f, 20 + 31.25, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(F_f_02sv, 20 + 62.5, 75 + 300 * i + 60 + offsetY);
-                                        ctx.fillText(B_f_02sv, 20 + 187.5, 75 + 300 * i + 60 + offsetY);
+                                    ctx.strokeStyle = 'blue';
+                                    ctx.beginPath();
+                                    if (second_right_left == "右"){
+                                        ctx.fillText(second_right_left, 250, 310 + i * 300 + offsetY);
+                                        ctx.moveTo(370, 290 + i * 300 + offsetY);
+                                        ctx.lineTo(370, 390 + i * 300 + offsetY);
+                                        ctx.stroke();
+                                        ctx.moveTo(370, 140 + i * 300 + offsetY);
+                                        ctx.lineTo(370, 240 + i * 300 + offsetY);
+                                        ctx.stroke();
+                                    } else {
+                                        ctx.fillText(second_right_left, 70, 310 + i * 300 + offsetY);
+                                        ctx.moveTo(100, 290 + i * 300 + offsetY);
+                                        ctx.lineTo(100, 390 + i * 300 + offsetY);
+                                        ctx.stroke();
+                                        ctx.moveTo(100, 140 + i * 300 + offsetY);
+                                        ctx.lineTo(100, 240 + i * 300 + offsetY);
+                                        ctx.stroke();
                                     }
 
-                                    ctx.rect(25, 25 + i * 300 + 50 + offsetY, 250, 100);
-                                    ctx.rect(15, 25 + 100 + i * 300 + 50 + offsetY, 250 + 20, 15);
-                                    ctx.rect(25, 25 + 100 + 15 + i * 300 + 50 + offsetY, 250, 100);
+                                    ctx.font = '20px Arial';
+                                    ctx.fillStyle = 'black';
+                                    ctx.fillText(F_f, 30, 100 + i * 300 + offsetY);
+                                    ctx.fillText(FM_f, 200, 100 + i * 300 + offsetY);
+                                    ctx.fillText(BM_f, 370, 100 + i * 300 + offsetY);
+                                    ctx.fillText(B_f, 550, 100 + i * 300 + offsetY);
+                                    ctx.fillText(FS_f, 30, 340 + i * 300 + offsetY);
+                                    ctx.fillText(FMS_f, 200, 340 + i * 300 + offsetY);
+                                    ctx.fillText(BMS_f, 370, 340 + i * 300 + offsetY);
+                                    ctx.fillText(BS_f, 550, 340 + i * 300 + offsetY);
 
-                                    ctx.moveTo(25, 190 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 250, 190 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5, 140 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5, 240 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 * 2, 140 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 * 2, 240 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 * 3, 140 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 * 3, 240 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 * 2, 25 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 * 2, 25 + 100 + i * 300 + 50 + offsetY);
-
-                                    //相手選手
-                                    ctx.rect(25 + 350, 25 + i * 300 + 50 + offsetY, 250, 100);
-                                    ctx.rect(15 + 350, 25 + 100 + i * 300 + 50 + offsetY, 250 + 20, 15);
-                                    ctx.rect(25 + 350, 25 + 100 + 15 + i * 300 + 50 + offsetY, 250, 100);
-
-                                    ctx.moveTo(25 + 350, 190 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 250 + 350, 190 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 + 350, 140 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 + 350, 240 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 * 2 + 350, 140 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 * 2 + 350, 240 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 * 3 + 350, 140 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 * 3 + 350, 240 + i * 300 + 50 + offsetY);
-                                    ctx.moveTo(25 + 62.5 * 2 + 350, 25 + i * 300 + 50 + offsetY);
-                                    ctx.lineTo(25 + 62.5 * 2 + 350, 25 + 100 + i * 300 + 50 + offsetY);
-
-                                    //相手選手のコース図
-                                    if ( second_right_left == "右"){
-                                        ctx.fillText(second_right_left, 250 + 350, 70 + i * 300 + offsetY);
-                                        if (first_right_left == "右"){
-                                            ctx.fillText(first_right_left, 30 + 350, 310 + i * 300 + offsetY);
-                                        }else{
-                                            ctx.fillText(first_right_left, 250 + 350, 310 + i * 300 + offsetY);
-                                        }
-                                        ctx.fillText(F_s, 20 + 218.75 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FM_s, 20 + 156.25 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BM_s, 20 + 93.75 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(B_s, 20 + 31.25 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FS_s, 20 + 218.75 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FMS_s, 20 + 156.25 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BMS_s, 20 + 93.75 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BS_s, 20 + 31.25 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(B_s_02sv, 20 + 62.5 + 350, 75 + 300 * i + 60 + offsetY);
-                                        ctx.fillText(F_s_02sv, 20 + 187.5 + 350, 75 + 300 * i + 60 + offsetY);
-                                    }
-
-                                    if (second_right_left == "左"){
-                                        ctx.fillText(second_right_left, 30 + 350, 70 + i * 300 + offsetY);
-                                        if (first_right_left == "右"){
-                                            ctx.fillText(first_right_left, 30 + 350, 310 + i * 300 + offsetY);
-                                        }else{
-                                            ctx.fillText(first_right_left, 250 + 350, 310 + i * 300 + offsetY);
-                                        }
-                                        ctx.fillText(B_s, 20 + 218.75 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BM_s, 20 + 156.25 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FM_s, 20 + 93.75 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(F_s, 20 + 31.25 + 350, 190 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BS_s, 20 + 218.75 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(BMS_s, 20 + 156.25 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FMS_s, 20 + 93.75 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(FS_s, 20 + 31.25 + 350, 140 + 300 * i + 80 + offsetY);
-                                        ctx.fillText(F_s_02sv, 20 + 62.5 + 350, 75 + 300 * i + 60 + offsetY);
-                                        ctx.fillText(B_s_02sv, 20 + 187.5 + 350, 75 + 300 * i + 60 + offsetY);
-                                    }
-                                    ctx.stroke();
+                                    ctx.fillText(F_s, 30, 230 + i * 300 + offsetY);
+                                    ctx.fillText(FM_s, 200, 230 + i * 300 + offsetY);
+                                    ctx.fillText(BM_s, 370, 230 + i * 300 + offsetY);
+                                    ctx.fillText(B_s, 550, 230 + i * 300 + offsetY);
+                                    ctx.fillText(FS_s, 30, 470 + i * 300 + offsetY);
+                                    ctx.fillText(FMS_s, 200, 470 + i * 300 + offsetY);
+                                    ctx.fillText(BMS_s, 370, 470 + i * 300 + offsetY);
+                                    ctx.fillText(BS_s, 550, 470 + i * 300 + offsetY);
                                 }
                             </script>
                         </div>
-                    </section>
+                    </div>
                 </li>
-                <li>
-                    <section>
-                        <h3 class="title">打法出現率</h3>
-                        <div class="box">
+                <li class="accordion-item">
+                    <h2 class="accordion-header" id="headingScoreMethodRate">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseScoreMethodRate" aria-expanded="false" aria-controls="collapseScoreMethodRate">
+                            打法出現率
+                        </button>
+                    </h2>
+                    <div id="collapseScoreMethodRate" class="accordion-collapse collapse" aria-labelledby="headingScoreMethodRate" data-bs-parent="#analysisAccordion">
+                        <div class="accordion-body">
                             {% set ns = namespace(score_count=0) %}
                             {% for score_method_rate_players in summary_score_method_rate %}
                                 {% if ns.score_count == 0 %}
@@ -325,22 +268,22 @@
                                 {% else %}
                                     <p class="score-text">ゲーム{{ ns.score_count }}</p>
                                 {% endif %}
-                                <div class="score-outer-wrap">
+                                <div class="score-outer-wrap mb-4">
                                     <p>プレイヤー1の打法出現率</p>
-                                    <div class="score-inner-wrap">
-                                        <div class="score-area">
+                                    <div class="score-inner-wrap row">
+                                        <div class="score-area col-6">
                                             {{ score_method_rate_players[0][0] | safe }}
                                         </div>
-                                        <div class="score-area">
+                                        <div class="score-area col-6">
                                             {{ score_method_rate_players[0][1] | safe }}
                                         </div>
                                     </div>
                                     <p>プレイヤー2の打法出現率</p>
-                                    <div class="score-inner-wrap">
-                                        <div class="score-area">
+                                    <div class="score-inner-wrap row">
+                                        <div class="score-area col-6">
                                             {{ score_method_rate_players[1][0] | safe }}
                                         </div>
-                                        <div class="score-area">
+                                        <div class="score-area col-6">
                                             {{ score_method_rate_players[1][1] | safe }}
                                         </div>
                                     </div>
@@ -348,13 +291,14 @@
                                 {% set ns.score_count = ns.score_count + 1 %}
                             {% endfor %}
                         </div>
-                    </section>
-                </li>                
+                    </div>
+                </li>
             </ul>
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-            <script src="/static/js/display.js"></script>
         </div>
-        <input class="button" type="button" onclick="location.href='{{ url_for('index')}}'" value="データベースへ">
+
+        <div class="d-flex justify-content-center mt-3">
+            <button type="button" class="btn btn-outline-secondary w-50" onclick="location.href='{{ url_for('index')}}'">ホームへ</button>
+        </div>
     </div>
 {% endblock %}
 
