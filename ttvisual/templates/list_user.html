@@ -1,29 +1,33 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ユーザー削除</title>
-</head>
-<body>
-    <h1>ユーザー削除</h1>
-    <ul>
-        {% for user in users %}
-            <li>{{ user['id'] }} - {{ user['username'] }}
-                <form action="{{ url_for('login_bp.delete_user', user_id=user['id']) }}" method="post" style="display:inline;">
-                    <button type="submit">削除</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-    <button type="button" onclick="location.href='{{ url_for('login_bp.login')}}'">ログインページへ</button>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
+{% extends "layout/base.html" %}
+
+{% block title %}
+    ユーザー一覧
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block main %}
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-7 mt-5">
+            <h2 class="text-center mb-4">ユーザー一覧</h2>
+            <ul class="list-group border border-warning rounded p-3">
+                {% for user in users %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ user['id'] }} - {{ user['username'] }}</span>
+                        <form action="{{ url_for('login_bp.delete_user', user_id=user['id']) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                        </form>
+                    </li>
                 {% endfor %}
             </ul>
-        {% endif %}
-    {% endwith %}
-</body>
-</html>
+            <div class="d-grid gap-2 mt-4">
+                <button type="button" class="btn btn-outline-secondary" onclick="location.href='{{ url_for('login_bp.login')}}'">ログインページへ</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}

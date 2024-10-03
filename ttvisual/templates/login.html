@@ -1,33 +1,37 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ログイン</title>
-</head>
-<body>
-    <h1>ログイン</h1>
-    <form method="POST">
-        <label for="username">ユーザー名:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">パスワード:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">送信</button>
-        <br>
-        <!--
-        <button type="button" onclick="location.href='{{ url_for('login_bp.register_user')}}'">ユーザ登録</button>
-        <button type="button" onclick="location.href='{{ url_for('login_bp.list_user')}}'">ユーザ削除</button>
-        -->
-    </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-</body>
-</html>
+{% extends "layout/base.html" %}
+
+{% block title %}
+    ログイン
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block main %}
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-7 mt-5">
+            <h2 class="text-center">ログイン</h2>
+            <form method="POST" class="mt-4">
+                <div class="mb-3">
+                    <label for="username" class="form-label">ユーザー名</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">パスワード</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">ログイン</button>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-outline-success flex-fill me-2" onclick="location.href='{{ url_for('login_bp.register_user')}}'">ユーザ登録</button>
+                    <button type="button" class="btn btn-outline-warning flex-fill" onclick="location.href='{{ url_for('login_bp.list_user')}}'">ユーザ一覧</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}
