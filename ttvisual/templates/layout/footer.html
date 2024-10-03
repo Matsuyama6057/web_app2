@@ -1,13 +1,20 @@
-<!-- flashの表示 -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-    <ul>
-        {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-{% endwith %}
+<!-- Flashメッセージの表示部分 -->
+<div class="container mt-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div>
+            {% for category, message in messages %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert"> <!-- ここを alert-danger に変更 -->
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+</div>
 
-<!-- コピーライトの表示 -->
-<p>Copyright 2022 iDS Sakaori Seminar.</p>
+<!-- フッターのコピーライト部分 -->
+<div class="bg-dark text-white text-center py-3 mt-auto">
+    <p class="mb-0">Copyright 2022 iDS Sakaori Seminar.</p>
+</div>
