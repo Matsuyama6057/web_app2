@@ -45,7 +45,7 @@ def index():
     db_games = cur.execute('SELECT * FROM games ORDER BY id DESC').fetchall()
     games = []
     for row in db_games:
-        games.append({'id':row[0], 'day': row[1], 'name1': row[2], 'name2': row[3], 'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
+        games.append({'id':row[0], 'date': row[1], 'name1': row[2], 'name2': row[3], 'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
     con.commit()
     con.close()
 
@@ -65,17 +65,17 @@ def sear():
     if len(date) == 0 and len(search) == 0:
         search_games = cur.execute('SELECT * FROM games ORDER BY id DESC').fetchall()
     elif len(date) != 0 and len(search) == 0:
-        search_games = cur.execute("SELECT * from games where day = (?) ORDER BY id DESC",
+        search_games = cur.execute("SELECT * from games where date = (?) ORDER BY id DESC",
                 [date]).fetchall()
     elif len(date) == 0 and len(search) != 0:
         search_games = cur.execute("SELECT * from games where name1 = (?) or name2 = (?) or right_left1 = (?) or right_left2 = (?) ORDER BY id DESC",
                 [search,search,search,search]).fetchall()
     else:
-        search_games = cur.execute("SELECT * from games where (day = (?) and name1 = (?)) or (day = (?) and name2 = (?)) or right_left1 = (?) or right_left2 = (?) ORDER BY id DESC",
+        search_games = cur.execute("SELECT * from games where (date = (?) and name1 = (?)) or (date = (?) and name2 = (?)) or right_left1 = (?) or right_left2 = (?) ORDER BY id DESC",
                 [date,search,date,search,search,search]).fetchall()
     games = []
     for row in search_games:
-        games.append({'id':row[0], 'day': row[1], 'name1': row[2], 'name2': row[3],'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
+        games.append({'id':row[0], 'date': row[1], 'name1': row[2], 'name2': row[3],'right_left1': row[4], 'right_left2': row[5], 'contents': row[6]})
     con.commit()
     con.close()
     return render_template(
