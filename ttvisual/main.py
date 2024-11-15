@@ -2,7 +2,6 @@
 # 必要なモジュールのインポート
 import os
 
-import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import login_required
 
@@ -12,6 +11,16 @@ from login import login_bp, login_manager
 
 
 app=Flask(__name__)
+app.secret_key = 'your_secret_key'  # セッションのためのシークレットキー
+
+# Flask-Loginの初期化
+login_manager.init_app(app)
+login_manager.login_view = 'login_bp.login'  # 未ログイン時のリダイレクト先
+
+# ブループリントの登録
+app.register_blueprint(analyze_bp)
+app.register_blueprint(login_bp)
+
 
 #----------テーブル関連-------------------------
 # データベースのテーブル作成
@@ -22,19 +31,6 @@ create_tables()
 # テーブル削除(要login.py/xxx変更)
 delete_tables()
 '''
-#----------------------------------------------
-
-
-#----------ログイン機能-------------------------
-app.secret_key = 'your_secret_key'  # セッションのためのシークレットキー
-
-# Flask-Loginの初期化
-login_manager.init_app(app)
-login_manager.login_view = 'login_bp.login'  # 未ログイン時のリダイレクト先
-
-# ブループリントの登録
-app.register_blueprint(analyze_bp)
-app.register_blueprint(login_bp)
 #----------------------------------------------
 
 
