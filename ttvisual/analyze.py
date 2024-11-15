@@ -16,7 +16,7 @@ analyze_bp = Blueprint('analyze_bp', __name__)
 @login_required
 def display_analyze():
     return render_template(
-        'display.html'
+        'analyze.html'
     )
 
 
@@ -669,7 +669,7 @@ def analyze():
 
 
     # 全データをreturn
-    return render_template('display.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_score_rate=summary_score_rate, id=id, summary_score_method_rate=summary_score_method_rate,
+    return render_template('analyze.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_score_rate=summary_score_rate, id=id, summary_score_method_rate=summary_score_method_rate,
                            first_sv03_course=first_sv03_course,second_sv03_course=second_sv03_course,
                            first_sv02_course=first_sv02_course,second_sv02_course=second_sv02_course,
                            first_sv03_course_len=first_sv03_course_len,second_sv03_course_len=second_sv03_course_len,
