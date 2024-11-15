@@ -12,18 +12,18 @@ analyze_bp = Blueprint('analyze_bp', __name__)
 
 
 # データ分析画面
-@analyze_bp.route('/display')
+@analyze_bp.route('/display_analyze')
 @login_required
-def display():
+def display_analyze():
     return render_template(
         'display.html'
     )
 
 
 # 分析処理
-@analyze_bp.route('/send',methods = ['post','get'])
+@analyze_bp.route('/analyze',methods = ['post','get'])
 @login_required
-def send():
+def analyze():
     # 変数設定
     id = request.form['id']
     name1 = request.form['name1']
