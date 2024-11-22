@@ -21,8 +21,33 @@
             <div class="card-header">ポイント別</div>
 
             <div class="card-body">
-                <!-- コンテンツをここに記載 -->
-                <p>ポイント別の内容がここに入ります。</p>
+                <!-- 得点表 -->
+                <p>得点表</p>
+                {{ score_tables }}
+
+                {% for game_players in score_tables %}
+                    <p>ゲーム目</p>
+                    <table class="table table-bordered">
+                        {% for game_player in game_players %}
+                            <tr>
+                                <!-- ここに総得点 -->
+                                {% for score in game_player %}
+                                    {% if score == "" %}
+                                        <td></td>
+                                    {% else %}
+                                        <td>{{ score }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endfor %}
+
+                <!-- 概要 -->
+                <p>概要</p>
+
+                <!-- 動画 -->
+                <p>動画</p>
             </div>
         </div>
 
@@ -31,8 +56,11 @@
             <div class="card-header">全体</div>
 
             <div class="card-body">
-                <!-- コンテンツをここに記載 -->
-                <p>全体の内容がここに入ります。</p>
+                <!-- 得点率(打法ごと) -->
+                <p>得点率</p>
+
+                <!-- 打球コース図 -->
+                <p>打球コース図</p>
             </div>
         </div>
 
@@ -89,16 +117,16 @@
                             {% set ns = namespace(num=0) %}
                             {% set ns1 = namespace(game_num=1) %}
 
-                            {% for table in df_score_list %}
+                            {% for table in score_tables %}
                                 <h5>{{ ns1.game_num }}ゲーム</h5>
                                 <table class="table table-bordered">
                                     {% for row in table %}
                                         <tr>
                                             <th>
                                                 {% if ns.num % 2 == 0 %} 
-                                                    {{ first }}
+                                                    {{ player_name_first }}
                                                 {% else %}
-                                                    {{ second }}
+                                                    {{ player_name_second }}
                                                 {% endif %}
 
                                                 {% set ns2 = namespace(num2=0) %}
@@ -106,15 +134,15 @@
                                                 {% for item in row %}
                                                     {% if ns1.game_num % 2 == 1 %}
                                                         {% if ns.num % 2 == 0 %}
-                                                            <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                            <td {% if score_name[ns2.num2] == player_name_first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                         {% else %}
-                                                            <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                            <td {% if score_name[ns2.num2] == player_name_second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                         {% endif %}
                                                     {% elif ns1.game_num % 2 == 0 %}
                                                         {% if ns.num % 2 == 0 %}
-                                                            <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                            <td {% if score_name[ns2.num2] == player_name_second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                         {% else %}
-                                                            <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                            <td {% if score_name[ns2.num2] == player_name_first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                         {% endif %}
                                                     {% endif %}
                                                     {% set ns2.num2 = ns2.num2 + 1 %}
@@ -151,8 +179,8 @@
                                 var second_sv02_course = {{ second_sv02_course | tojson | safe }};
                                 var first_right_left = {{ first_right_left | tojson | safe }};
                                 var second_right_left = {{ second_right_left | tojson | safe }};
-                                var first_name = {{ first | tojson | safe }};
-                                var second_name = {{ second | tojson | safe }};
+                                var first_name = {{ player_name_first | tojson | safe }};
+                                var second_name = {{ player_name_second | tojson | safe }};
 
                                 canvas.height = numDrawings * 430; // 高さを描画回数に応じて計算
 
