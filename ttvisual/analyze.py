@@ -44,25 +44,25 @@ def analyze():
     os.makedirs(dirname, exist_ok=True)
 
     # 選手名・利き手を取得
-    first=df['名前'][0]
+    player_name_first=df['名前'][0]
     for i in range(len(df['名前'])):
-        if df['名前'][i]!=first:
-            second=df['名前'][i]
+        if df['名前'][i]!=player_name_first:
+            player_name_second=df['名前'][i]
             break
     flag=0
-    if name1 in first:
+    if name1 in player_name_first:
         pass
     else:
         flag+=1
-    if name2 in second:
+    if name2 in player_name_second:
         pass
     else:
         flag+=1
 
     if flag==2:
-        tmp_name=first
-        first=second
-        second=tmp_name
+        tmp_name=player_name_first
+        player_name_first=player_name_second
+        player_name_second=tmp_name
 
     first_right_left=right_left1
     second_right_left=right_left2
@@ -102,11 +102,11 @@ def analyze():
             second_score=[]
             sv03_score=[]
 
-        if df['00_03_Point'][i]==first:
+        if df['00_03_Point'][i]==player_name_first:
             score_name.append(df['名前'][i])
             first_score.append(score1[i])
             second_score.append(-1)
-        if df['00_03_Point'][i]==second:
+        if df['00_03_Point'][i]==player_name_second:
             score_name.append(df['名前'][i])
             second_score.append(score2[i])
             first_score.append(-1)
@@ -306,12 +306,12 @@ def analyze():
                 first_num+=1
                 first_result[i][j]=first_num
             else:
-                first_result[i][j]=" "
+                first_result[i][j]=""
             if second_result[i][j]!=-1:
                 second_num+=1
                 second_result[i][j]=second_num
             else:
-                second_result[i][j]=" "
+                second_result[i][j]=""
 
 
     first_score_data=[]
@@ -321,14 +321,14 @@ def analyze():
         second_score_data.append(second_result[i])
     data_score=[]
     for i in range(len(first_score_data)):
-        data_score.append({first:first_score_data[i],second:second_score_data[i]})
-    df_score_list=[]
+        data_score.append({player_name_first:first_score_data[i],player_name_second:second_score_data[i]})
+    score_tables=[]
     i=0
     for data in data_score:
         data=pd.DataFrame(data)
-        df_score_list.append(data.transpose())
+        score_tables.append(data.transpose())
         i+=1
-    tmp=len(first)-len(second)
+    tmp=len(player_name_first)-len(player_name_second)
     #------------------------------------------
 
 
@@ -348,7 +348,7 @@ def analyze():
         for j in range(tmp_j,tmp_j+len(sv03[i])):
             row1=df['01_SV_03'][j]
             row2=df['01_SV_02'][j]
-            if df['名前'][j]==first:
+            if df['名前'][j]==player_name_first:
                 if row1=="F":
                     F_f+=1
                 elif row1=="FM":
@@ -372,7 +372,7 @@ def analyze():
                     B_f_sv02+=1
 
 
-            if df['名前'][j]==second:
+            if df['名前'][j]==player_name_second:
                 if row1=="F":
                     F_s+=1
                 elif row1=="FM":
@@ -668,11 +668,28 @@ def analyze():
     #------------------------------------------
 
 
-    # 全データをreturn
-    return render_template('analyze.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_score_rate=summary_score_rate, id=id, summary_score_method_rate=summary_score_method_rate,
-                           first_sv03_course=first_sv03_course,second_sv03_course=second_sv03_course,
-                           first_sv02_course=first_sv02_course,second_sv02_course=second_sv02_course,
-                           first_sv03_course_len=first_sv03_course_len,second_sv03_course_len=second_sv03_course_len,
-                           first_sv02_course_len=first_sv02_course_len,second_sv02_course_len=second_sv02_course_len,
-                           first_right_left=first_right_left,second_right_left=second_right_left,
-                           score_name=score_name)
+    # returnするデータを辞書でまとめる
+    context = {
+        'score_tables': [df.to_numpy() for df in score_tables],
+        'player_name_first': player_name_first,
+        'player_name_second': player_name_second,
+        'tmp': tmp,
+        'summary_score_rate': summary_score_rate,
+        'id': id,
+        'summary_score_method_rate': summary_score_method_rate,
+        'first_sv03_course': first_sv03_course,
+        'second_sv03_course': second_sv03_course,
+        'first_sv02_course': first_sv02_course,
+        'second_sv02_course': second_sv02_course,
+        'first_sv03_course_len': first_sv03_course_len,
+        'second_sv03_course_len': second_sv03_course_len,
+        'first_sv02_course_len': first_sv02_course_len,
+        'second_sv02_course_len': second_sv02_course_len,
+        'first_right_left': first_right_left,
+        'second_right_left': second_right_left,
+        'score_name': score_name,
+        'enumerate': enumerate  # enumerateを追加
+    }
+
+    # 全データをrender_templateに渡す
+    return render_template('analyze.html', **context)
