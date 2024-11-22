@@ -11,9 +11,29 @@
 {% block main %}
     <div class="bg_pattern Paper_v2"></div>
     <div class="container mt-5">
+        <!-- 見出し -->
         <div class="text-center">
-            <h2 class="mb-3">分析結果</h3>
-            <h5 class="mb-4">見たいデータをクリックして下さい</h5>
+            <h2 class="mb-4">分析結果</h2>
+        </div>
+
+        <!-- ポイント別 -->
+        <div class="card mb-5">
+            <div class="card-header">ポイント別</div>
+
+            <div class="card-body">
+                <!-- コンテンツをここに記載 -->
+                <p>ポイント別の内容がここに入ります。</p>
+            </div>
+        </div>
+
+        <!-- 全体 -->
+        <div class="card mb-5">
+            <div class="card-header">全体</div>
+
+            <div class="card-body">
+                <!-- コンテンツをここに記載 -->
+                <p>全体の内容がここに入ります。</p>
+            </div>
         </div>
 
         <div>
@@ -66,46 +86,49 @@
                     </h2>
                     <div id="collapseScoreTable" class="accordion-collapse collapse" aria-labelledby="headingScoreTable" data-bs-parent="#analysisAccordion">
                         <div class="accordion-body">
-                            <div>
-                                {% set ns = namespace(num=0) %}
-                                {% set ns1 = namespace(game_num=1) %}
-                                {% for table in df_score_list %}
-                                    <h5>{{ ns1.game_num }}ゲーム</h5>
-                                    <table class="table table-bordered">
-                                        {% for row in table %}
-                                            <tr>
-                                                <th>
-                                                    {% if ns.num % 2 == 0 %} 
-                                                        {{ first }}
-                                                    {% else %}
-                                                        {{ second }}
-                                                    {% endif %}
-                                                    {% set ns2 = namespace(num2=0) %}
-                                                    {% for item in row %}
-                                                        {% if ns1.game_num % 2 == 1 %}
-                                                            {% if ns.num % 2 == 0 %}
-                                                                <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
-                                                            {% else %}
-                                                                <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
-                                                            {% endif %}
-                                                        {% elif ns1.game_num % 2 == 0 %}
-                                                            {% if ns.num % 2 == 0 %}
-                                                                <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
-                                                            {% else %}
-                                                                <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
-                                                            {% endif %}
+                            {% set ns = namespace(num=0) %}
+                            {% set ns1 = namespace(game_num=1) %}
+
+                            {% for table in df_score_list %}
+                                <h5>{{ ns1.game_num }}ゲーム</h5>
+                                <table class="table table-bordered">
+                                    {% for row in table %}
+                                        <tr>
+                                            <th>
+                                                {% if ns.num % 2 == 0 %} 
+                                                    {{ first }}
+                                                {% else %}
+                                                    {{ second }}
+                                                {% endif %}
+
+                                                {% set ns2 = namespace(num2=0) %}
+
+                                                {% for item in row %}
+                                                    {% if ns1.game_num % 2 == 1 %}
+                                                        {% if ns.num % 2 == 0 %}
+                                                            <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                        {% else %}
+                                                            <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
                                                         {% endif %}
-                                                        {% set ns2.num2 = ns2.num2 + 1 %}
-                                                    {% endfor %}
-                                                    {% set ns.num = ns.num + 1 %}
-                                                </th>
-                                            </tr>
-                                        {% endfor %}
-                                        {% set ns1.game_num = ns1.game_num + 1 %}
-                                    </table>
-                                    <br>
-                                {% endfor %}
-                            </div>
+                                                    {% elif ns1.game_num % 2 == 0 %}
+                                                        {% if ns.num % 2 == 0 %}
+                                                            <td {% if score_name[ns2.num2] == second %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                        {% else %}
+                                                            <td {% if score_name[ns2.num2] == first %} style="background-color: pink;" {% endif %}>{{ item }}</td>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {% set ns2.num2 = ns2.num2 + 1 %}
+                                                {% endfor %}
+
+                                                {% set ns.num = ns.num + 1 %}
+                                            </th>
+                                        </tr>
+                                    {% endfor %}
+
+                                    {% set ns1.game_num = ns1.game_num + 1 %}
+                                </table>
+                                <br>
+                            {% endfor %}
                         </div>
                     </div>
                 </li>

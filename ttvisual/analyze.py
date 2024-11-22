@@ -668,11 +668,28 @@ def analyze():
     #------------------------------------------
 
 
-    # 全データをreturn
-    return render_template('analyze.html', df_score_list=[df.to_numpy() for df in df_score_list], first=first,second=second,tmp=tmp, summary_score_rate=summary_score_rate, id=id, summary_score_method_rate=summary_score_method_rate,
-                           first_sv03_course=first_sv03_course,second_sv03_course=second_sv03_course,
-                           first_sv02_course=first_sv02_course,second_sv02_course=second_sv02_course,
-                           first_sv03_course_len=first_sv03_course_len,second_sv03_course_len=second_sv03_course_len,
-                           first_sv02_course_len=first_sv02_course_len,second_sv02_course_len=second_sv02_course_len,
-                           first_right_left=first_right_left,second_right_left=second_right_left,
-                           score_name=score_name)
+    # returnするデータを辞書でまとめる
+    context = {
+        'df_score_list': [df.to_numpy() for df in df_score_list],
+        'first': first,
+        'second': second,
+        'tmp': tmp,
+        'summary_score_rate': summary_score_rate,
+        'id': id,
+        'summary_score_method_rate': summary_score_method_rate,
+        'first_sv03_course': first_sv03_course,
+        'second_sv03_course': second_sv03_course,
+        'first_sv02_course': first_sv02_course,
+        'second_sv02_course': second_sv02_course,
+        'first_sv03_course_len': first_sv03_course_len,
+        'second_sv03_course_len': second_sv03_course_len,
+        'first_sv02_course_len': first_sv02_course_len,
+        'second_sv02_course_len': second_sv02_course_len,
+        'first_right_left': first_right_left,
+        'second_right_left': second_right_left,
+        'score_name': score_name,
+        'enumerate': enumerate  # enumerateを追加
+    }
+
+    # 全データをrender_templateに渡す
+    return render_template('analyze.html', **context)
