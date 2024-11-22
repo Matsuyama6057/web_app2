@@ -1,34 +1,35 @@
-{% extends "layout/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
     ユーザー登録
 {% endblock %}
 
 {% block header %}
+    <h1>ユーザー登録</h1>
 {% endblock %}
 
 {% block main %}
-    <div class="container d-flex justify-content-center">
-        <div class="col-md-7 mt-5">
-            <h2 class="text-center">ログイン</h2>
-            <form method="POST" class="mt-4">
-                <div class="mb-3">
-                    <label for="username" class="form-label">ユーザー名</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">パスワード</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-success">登録</button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="location.href='{{ url_for('login_bp.login')}}'">ログインページへ</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <form method="POST">
+        <label for="username">ユーザー名:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">パスワード:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">登録</button>
+        <br>
+        <button type="button" onclick="location.href='{{ url_for('login_bp.login')}}'">ログインページへ</button>
+    </form>
 {% endblock %}
 
 {% block footer %}
-    {{ super() }}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
 {% endblock %}

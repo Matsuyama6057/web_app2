@@ -1,53 +1,44 @@
-{% extends "layout/base.html" %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>データ削除</title>
+    <link rel="stylesheet" href="/static/css/form.css">
+</head>
+<body>
+    <header>
+        <h1>卓球分析</h1>
+    </header>
 
-{% block title %}
-    データ削除
-{% endblock %}
+    <div>
+        <h2>削除したいデータベースのidを入力してください</h2>
+    </div>
 
-{% block header %}
-    {{ super() }}
-{% endblock %}
-
-{% block main %}
-    <div class="container mt-5">
-        <div class="text-center">
-            <h2 class="mb-3">削除したい試合IDの入力</h3>
-            <h5 class="mb-4">IDは半角数字を入力して下さい</h5>
+    <form method="post" action="{{url_for('post_delete')}}" onsubmit="return confirmDelete()">
+        <div>
+            <table border="1">
+                <tr>
+                    <th>id</th>
+                </tr>
+                <tr>
+                    <td><input type="number" name="id" required></td>
+                </tr>
+            </table>
         </div>
 
-        <form method="post" action="{{ url_for('post_delete') }}" onsubmit="return confirmDelete()">
-            <div class="mb-3">
-                <table class="table table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="number" name="id" class="form-control" required>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div>
+            <input type="submit" value="削除する">
+            <label>
+                <input type="reset" value="リセットする">
+            </label>
+        </div>
+    </form>
 
-            <div class="mb-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-danger flex-fill me-2">削除する</button>
-                <button type="reset" class="btn btn-secondary flex-fill">リセットする</button>
-            </div>
-        </form>
-    </div>
-{% endblock %}
-
-{% block footer %}
-    {{ super() }}
-    
     <script>
         function confirmDelete() {
             var id = document.forms[0]["id"].value;
-            return confirm("ID " + id + " を本当に削除しますか？");
+            return confirm("id " + id + " を本当に削除しますか？");
         }
     </script>
-{% endblock %}
+</body>
+</html>
