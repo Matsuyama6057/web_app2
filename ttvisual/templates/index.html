@@ -43,7 +43,7 @@
                 {% for game in games %}
                     <tr align="center">
                         <td class="lalign" width="50">{{ game.id }}</td>
-                        <td class="lalign" width="150">{{ game.day }}</td>
+                        <td class="lalign" width="150">{{ game.date }}</td>
                         <td class="lalign" width="200">{{ game.name1 }}</td>
                         <td class="lalign" width="200">{{ game.name2 }}</td>
                         <td class="lalign" width="150">
@@ -61,7 +61,7 @@
                             {% endif %}
                         </td>
                         <td width="150">
-                            <form method="post" action="{{ url_for('send') }}" enctype="multipart/form-data">
+                            <form method="post" action="{{ url_for('analyze_bp.analyze') }}" enctype="multipart/form-data">
                                 <input type="hidden" name="id" value="{{ game.id }}">
                                 <input type="hidden" name="name1" value="{{ game.name1 }}">
                                 <input type="hidden" name="name2" value="{{ game.name2 }}">
