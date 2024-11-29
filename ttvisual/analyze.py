@@ -10,16 +10,6 @@ from db import get_connection
 
 analyze_bp = Blueprint('analyze_bp', __name__)
 
-
-# データ分析画面
-@analyze_bp.route('/display_analyze')
-@login_required
-def display_analyze():
-    return render_template(
-        'analyze.html'
-    )
-
-
 # 分析処理
 @analyze_bp.route('/analyze',methods = ['post','get'])
 @login_required
