@@ -654,21 +654,33 @@ def analyze():
     return render_template('analyze.html', **context)
 
 
+# 得点表を作成
 def create_score_table(first_result, second_result, player_name_first, player_name_second):
-    for i in range(len(first_result)):
-        first_num=0
-        second_num=0
-        for j in range(len(first_result[i])):
-            if first_result[i][j]!=-1:
-                first_num+=1
-                first_result[i][j]=first_num
+    # 結果から得点表の中身を作成
+    game_num = len(first_result)
+
+    # ゲームごと
+    for game in range(game_num):
+        # 変数の初期化
+        point_num = len(first_result[game])
+        first_point = 0
+        second_point = 0
+
+        # ポイントごと
+        for point in range(point_num):
+            # プレイヤー1の得点結果
+            if first_result[game][point] != -1:
+                first_point = first_point + 1
+                first_result[game][point] = first_point
             else:
-                first_result[i][j]=""
-            if second_result[i][j]!=-1:
-                second_num+=1
-                second_result[i][j]=second_num
+                first_result[game][point] = ""
+
+            # プレイヤー2の得点結果
+            if second_result[game][point] != -1:
+                second_point = second_point + 1
+                second_result[game][point] = second_point
             else:
-                second_result[i][j]=""
+                second_result[game][point] = ""
 
 
     first_score_data=[]
