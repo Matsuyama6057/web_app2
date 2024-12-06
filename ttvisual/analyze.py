@@ -287,37 +287,7 @@ def analyze():
 
 
     #------------得点表-------------------------
-    for i in range(len(first_result)):
-        first_num=0
-        second_num=0
-        for j in range(len(first_result[i])):
-            if first_result[i][j]!=-1:
-                first_num+=1
-                first_result[i][j]=first_num
-            else:
-                first_result[i][j]=""
-            if second_result[i][j]!=-1:
-                second_num+=1
-                second_result[i][j]=second_num
-            else:
-                second_result[i][j]=""
-
-
-    first_score_data=[]
-    second_score_data=[]
-    for i in range(len(first_result)):
-        first_score_data.append(first_result[i])
-        second_score_data.append(second_result[i])
-    data_score=[]
-    for i in range(len(first_score_data)):
-        data_score.append({player_name_first:first_score_data[i],player_name_second:second_score_data[i]})
-    score_tables=[]
-    i=0
-    for data in data_score:
-        data=pd.DataFrame(data)
-        score_tables.append(data.transpose())
-        i+=1
-    tmp=len(player_name_first)-len(player_name_second)
+    score_tables, tmp = create_score_table(first_result, second_result, player_name_first, player_name_second)
     #------------------------------------------
 
 
@@ -659,9 +629,9 @@ def analyze():
 
     # returnするデータを辞書でまとめる
     context = {
-        'score_tables': [df.to_numpy() for df in score_tables],
         'player_name_first': player_name_first,
         'player_name_second': player_name_second,
+        'score_tables': [df.to_numpy() for df in score_tables],
         'tmp': tmp,
         'summary_score_rate': summary_score_rate,
         'id': id,
@@ -682,3 +652,39 @@ def analyze():
 
     # 全データをrender_templateに渡す
     return render_template('analyze.html', **context)
+
+
+def create_score_table(first_result, second_result, player_name_first, player_name_second):
+    for i in range(len(first_result)):
+        first_num=0
+        second_num=0
+        for j in range(len(first_result[i])):
+            if first_result[i][j]!=-1:
+                first_num+=1
+                first_result[i][j]=first_num
+            else:
+                first_result[i][j]=""
+            if second_result[i][j]!=-1:
+                second_num+=1
+                second_result[i][j]=second_num
+            else:
+                second_result[i][j]=""
+
+
+    first_score_data=[]
+    second_score_data=[]
+    for i in range(len(first_result)):
+        first_score_data.append(first_result[i])
+        second_score_data.append(second_result[i])
+    data_score=[]
+    for i in range(len(first_score_data)):
+        data_score.append({player_name_first:first_score_data[i],player_name_second:second_score_data[i]})
+    score_tables=[]
+    i=0
+    for data in data_score:
+        data=pd.DataFrame(data)
+        score_tables.append(data.transpose())
+        i+=1
+    tmp=len(player_name_first)-len(player_name_second)
+
+    return(score_tables, tmp)
