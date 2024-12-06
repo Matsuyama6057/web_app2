@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # 必要なモジュールのインポート
 import os
-
 import pandas as pd
 from flask import Blueprint, render_template, request
 from flask_login import login_required
@@ -9,31 +8,6 @@ from flask_login import login_required
 from db import get_connection
 
 analyze_bp = Blueprint('analyze_bp', __name__)
-
-@analyze_bp.route('/analyze_tmp',methods = ['post','get'])
-@login_required
-def analyze_tmp():
-    # パス設定
-    games_path = os.path.join('data/files')
-    images_dir = os.path.join('static/images')
-    
-    # 変数設定
-    game_id = request.form['id']
-    player1 = {
-        'name': request.form['name1'],
-        'hand': request.form['right_left1']
-    }
-    player2 = {
-        'name': request.form['name2'],
-        'hand': request.form['right_left2']
-    }
-
-    con, cur = get_connection()
-    cur.execute("SELECT * from games where id = (?)", [game_id])
-    file_name= os.path.join(data_folder, cur.fetchall()[0][6])
-    
-
-    return 0
 
 # 分析処理
 @analyze_bp.route('/analyze',methods = ['post','get'])
