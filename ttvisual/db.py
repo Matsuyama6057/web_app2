@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
-import sqlite3
+import os
 import time
+import sqlite3
 
 DATABASE ='data/database.db'
+
+# 空のデータベースを作成
+db_dir = os.path.dirname(DATABASE)
+if not os.path.exists(db_dir):
+    os.makedirs(db_dir)
+
+if not os.path.exists(DATABASE):
+    with open(DATABASE, 'w') as f:
+        pass
 
 
 # DBとの接続

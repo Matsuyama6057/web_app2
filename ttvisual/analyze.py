@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # 必要なモジュールのインポート
 import os
-
 import pandas as pd
 from flask import Blueprint, render_template, request
 from flask_login import login_required
@@ -9,16 +8,6 @@ from flask_login import login_required
 from db import get_connection
 
 analyze_bp = Blueprint('analyze_bp', __name__)
-
-
-# データ分析画面
-@analyze_bp.route('/display_analyze')
-@login_required
-def display_analyze():
-    return render_template(
-        'analyze.html'
-    )
-
 
 # 分析処理
 @analyze_bp.route('/analyze',methods = ['post','get'])
@@ -298,37 +287,7 @@ def analyze():
 
 
     #------------得点表-------------------------
-    for i in range(len(first_result)):
-        first_num=0
-        second_num=0
-        for j in range(len(first_result[i])):
-            if first_result[i][j]!=-1:
-                first_num+=1
-                first_result[i][j]=first_num
-            else:
-                first_result[i][j]=""
-            if second_result[i][j]!=-1:
-                second_num+=1
-                second_result[i][j]=second_num
-            else:
-                second_result[i][j]=""
-
-
-    first_score_data=[]
-    second_score_data=[]
-    for i in range(len(first_result)):
-        first_score_data.append(first_result[i])
-        second_score_data.append(second_result[i])
-    data_score=[]
-    for i in range(len(first_score_data)):
-        data_score.append({player_name_first:first_score_data[i],player_name_second:second_score_data[i]})
-    score_tables=[]
-    i=0
-    for data in data_score:
-        data=pd.DataFrame(data)
-        score_tables.append(data.transpose())
-        i+=1
-    tmp=len(player_name_first)-len(player_name_second)
+    score_tables, tmp = create_score_table(first_result, second_result, player_name_first, player_name_second)
     #------------------------------------------
 
 
@@ -670,9 +629,9 @@ def analyze():
 
     # returnするデータを辞書でまとめる
     context = {
-        'score_tables': [df.to_numpy() for df in score_tables],
         'player_name_first': player_name_first,
         'player_name_second': player_name_second,
+        'score_tables': [df.to_numpy() for df in score_tables],
         'tmp': tmp,
         'summary_score_rate': summary_score_rate,
         'id': id,
@@ -693,3 +652,51 @@ def analyze():
 
     # 全データをrender_templateに渡す
     return render_template('analyze.html', **context)
+
+
+# 得点表を作成
+def create_score_table(first_result, second_result, player_name_first, player_name_second):
+    # 結果から得点表の中身を作成
+    game_num = len(first_result)
+
+    # ゲームごと
+    for game in range(game_num):
+        # 変数の初期化
+        point_num = len(first_result[game])
+        first_point = 0
+        second_point = 0
+
+        # ポイントごと
+        for point in range(point_num):
+            # プレイヤー1の得点結果
+            if first_result[game][point] != -1:
+                first_point = first_point + 1
+                first_result[game][point] = first_point
+            else:
+                first_result[game][point] = ""
+
+            # プレイヤー2の得点結果
+            if second_result[game][point] != -1:
+                second_point = second_point + 1
+                second_result[game][point] = second_point
+            else:
+                second_result[game][point] = ""
+
+
+    first_score_data=[]
+    second_score_data=[]
+    for i in range(len(first_result)):
+        first_score_data.append(first_result[i])
+        second_score_data.append(second_result[i])
+    data_score=[]
+    for i in range(len(first_score_data)):
+        data_score.append({player_name_first:first_score_data[i],player_name_second:second_score_data[i]})
+    score_tables=[]
+    i=0
+    for data in data_score:
+        data=pd.DataFrame(data)
+        score_tables.append(data.transpose())
+        i+=1
+    tmp=len(player_name_first)-len(player_name_second)
+
+    return(score_tables, tmp)
