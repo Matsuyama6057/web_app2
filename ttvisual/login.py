@@ -15,7 +15,7 @@ class User(UserMixin):
         self.username = username
         self.password_hash = password_hash
 
-    # ユーザ名を取得
+    # ユーザー名を取得
     @staticmethod
     def get_by_username(username):
         con, cur = get_connection()
@@ -26,7 +26,7 @@ class User(UserMixin):
             return User(*user_data)
         return None
 
-    # ユーザIDを取得
+    # ユーザーIDを取得
     @staticmethod
     def get_by_id(user_id):
         con, cur = get_connection()
@@ -37,7 +37,7 @@ class User(UserMixin):
             return User(*user_data)
         return None
 
-    # ユーザを削除
+    # ユーザーを削除
     @staticmethod
     def delete_by_id(user_id):
         con, cur = get_connection()
@@ -45,7 +45,7 @@ class User(UserMixin):
         con.commit()
         con.close()
     
-    # ユーザを並び替え
+    # ユーザーを並び替え
     @staticmethod
     def order_by_id():
         con, cur = get_connection()
@@ -69,7 +69,7 @@ def load_user(user_id):
     return User.get_by_id(user_id)
 
 
-#----------ユーザ機能---------------------------
+#----------ユーザー機能---------------------------
 # ログイン
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
